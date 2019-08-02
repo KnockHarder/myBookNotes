@@ -1,2 +1,4 @@
-# myBookNotes
-org-file-notes of books
+# 读书整理 #
+
+- [阅读书目清单](./bookList.org)
+

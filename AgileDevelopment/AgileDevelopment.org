@@ -179,6 +179,32 @@ if (e != null && e.isTimeToPay(today))
 两个表示该新类及其工厂的接口类，两个实现这些接口的具体类。
 ** Composite模式
 [[file:Composite%E6%A8%A1%E5%BC%8F.png][Composite模式]]
+- 描述 :: 上图展示了Composite模式的基本结构。基类Shape有两个派生类：Circle和Square，第三个派生类是一个组合体。
+CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeShape的draw()方法时，它就把这个方法委托给列表中的每一个Shape实例。
+因此，一个CompositeShape实例就像是一个单一的Shape，可以把它传递给任何使用Shape的函数或者对象，并且它表现得就像是个Shape。
+不过，实际上它只是一组Shape实例的代理。
+** Observer模式
+- 问题描述 :: 有一个计时器，会捕获来自操作系统的时钟中断，生成一个时间戳。现在我们想实现一个数字时钟，将时间戳转换为日期和时间，并展示。
+	  一种可行的方式是不停轮询获取最新的时间戳，然后计算时间。但时间戳只有在捕获到时钟中断时，都会发生变化，轮询是会造成CPU的极大浪费。
+- 描述 :: 另一种解决方案时在计时器时间发生变化时，告知数字时钟，数字时钟既而更新时间。这里，数字时钟为计时器的观察者(Observer)。
+- 示例 :: 
+	[[file:Observer%E6%A8%A1%E5%BC%8F%E7%A4%BA%E4%BE%8B.png][Observer模式示例]]
+	其中MockTimeSink是MockTimeSource的观察者，通过TestClockDriver将MockTimeSink注册到MockTimeSource的观察者队列中。
+	当MockTimeSource发生变化时，它会调用notifyObservers()方法遍历各个观察者，并调用其update()方法。
+	MockTimeSource实现观察者(Observer)接口，当被通知时，获取当前时间并展示。
+- 推模型与拉模型 :: 上述示例，观察者在接收到消息后，查询被观察者得到数据，这种模型被称为“拉”模型。相应的如果数据是通过update方法传递，
+	     则为“推”模型。
+** Abstract Server模式、Adapter模式和Bridge模式
+*** Abstract Server模式
+- 问题 :: 考虑实现一个简单的开关控制器，可心控制灯泡的开关，一种简单的设计如下  
+	  [[file:%E7%AE%80%E5%8D%95%E7%9A%84%E7%81%AF%E6%B3%A1%E5%BC%80%E5%85%B3%E5%AE%9E%E7%8E%B0.png][简单的灯泡开关实现]]
+	  这个设计违反了两个设计原则：依赖倒置原则(DIP)和开放封闭原则(OCP)。对DIP的违反是明显的，Switch依赖了具体类Light。
+	  DIP告诉我们要优先依赖于抽象类。对OCP的违反虽然不那么明显，但是更加切中要害：在任何需要Switch的地方都要附带上Light，
+	  不能容易地扩展Switch去管理除Light外的其他对象，如当需要控制音乐的开关时（比如在回家后，打开门，同时打开灯光和音乐的开关）。
+- 描述 :: 为了解决这个问题，可以使用一个最简单的设计模式：Abstract Server模式。在Switch和Light之间引入一个接口，
+	这样就使得Switch能够控制任何实现了这个接口的东西，这立即就满足了DIP和OCP
+	[[file:AbstractServer%E6%A8%A1%E5%BC%8F.png][AbstractServer模式]]
+
 * 包的设计原则
 ** 粒度：包的内聚性原则
 *** 重用发布等价原则（Release Reuse Equivalency Principle）

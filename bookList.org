@@ -20,3 +20,6 @@
 * TODO *nix
 - 学习GNU Emacs :: https://book.douban.com/subject/1236987/
 - sed, a stream editor :: https://www.gnu.org/software/sed/manual/sed.html
+
+* 程序员的自我修养
+- 代码大全 :: https://book.douban.com/subject/1477390/

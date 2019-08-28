@@ -196,7 +196,7 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 	     则为“推”模型。
 ** Abstract Server模式、Adapter模式和Bridge模式
 *** Abstract Server模式
-- 问题 :: 考虑实现一个简单的开关控制器，可心控制灯泡的开关，一种简单的设计如下  
+- 问题 :: 考虑实现一个简单的开关控制器，可以控制灯泡的开关，一种简单的设计如下  
 	  [[file:%E7%AE%80%E5%8D%95%E7%9A%84%E7%81%AF%E6%B3%A1%E5%BC%80%E5%85%B3%E5%AE%9E%E7%8E%B0.png][简单的灯泡开关实现]]
 	  这个设计违反了两个设计原则：依赖倒置原则(DIP)和开放封闭原则(OCP)。对DIP的违反是明显的，Switch依赖了具体类Light。
 	  DIP告诉我们要优先依赖于抽象类。对OCP的违反虽然不那么明显，但是更加切中要害：在任何需要Switch的地方都要附带上Light，
@@ -204,6 +204,10 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 - 描述 :: 为了解决这个问题，可以使用一个最简单的设计模式：Abstract Server模式。在Switch和Light之间引入一个接口，
 	这样就使得Switch能够控制任何实现了这个接口的东西，这立即就满足了DIP和OCP
 	[[file:AbstractServer%E6%A8%A1%E5%BC%8F.png][AbstractServer模式]]
+- 谁拥有接口 :: 接口属于它的客户，而不是它的派生类。
+	   客户和接口之间的逻辑绑定关系要强于接口和它的派生类之间的逻辑绑定关系。
+	   它们之间的关系强到在没有Switchabl有的情况下就无法使用Switch；但是，在没有Light的情况下却完全可以使用Switch。
+	   逻辑关系的强度和实体(physical)关系的强度是不一致的。继承是一个比关联强得多的实体关系。
 
 * 包的设计原则
 ** 粒度：包的内聚性原则

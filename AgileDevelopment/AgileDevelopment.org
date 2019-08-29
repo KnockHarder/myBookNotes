@@ -283,6 +283,17 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 - 优点 :: Product的使用者和ProductImplementation都不知道所发生的事情，数据库操作在这两者都不知道的情况下被插入到应用程序中。
 	这正是 PROXY模式的优点。理论上,它可以在两个协作的对象都不知道的情况下被插入到它们之间。
 	因此,使用它可以跨越像数据库或者网络这样的障碍,而不会影响到任何一个参与者。
+*** Stairway To Heaven模式
+- Stairway To Heaven模式 :: Stairway To Heaven模式是另一个可以完成和Proxy模式一样的依赖关系倒置的模式。
+     我们引入一个知道数据库的抽象类PersistentObject，它提供了read和write两个抽象方法，
+     同时提供了一组实现方法作为实现read和write所需要的工具。在PersistentProduct的read和write的实现中，
+     会使用这些工具把Product的所有数据字段从数据库中读出或者写入到数据库。
+     现使PersistentProduct同时继承Product的PersistentObject类，如下图所示。
+     [[file:StairwayToHaven%E6%A8%A1%E5%BC%8F.png][StairwayToHaven模式]]
+- 优势 :: Product的使用者并不需要知道PersistentObject，在需要数据库操作的少量代码中，则可以将类型向下转换（如dynamic_cast），
+	将Product类转换成实际的PersistentObject类，调用其write和read方法。
+	这样，就可以将有关数据库的知识和应用程序的业务规则完全分离开来。
+** Visitor模式
 * 包的设计原则
 ** 粒度：包的内聚性原则
 *** 重用发布等价原则（Release Reuse Equivalency Principle）

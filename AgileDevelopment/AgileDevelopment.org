@@ -1,3 +1,19 @@
+#+TITLE: 《敏捷软件开发──原则、模式与实践》阅读笔记
+#+AUTHOR: C.Wong
+#+EMAIL: channingwong@qq.com
+#+DATE: 2019-09-03 Tus
+#+DESCRIPTION:
+#+KEYWORDS: 设计模式、敏捷开发
+#+LANGUAGE:  cn-zh
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   /channingwong
+#+LINK_HOME: /channingwong
+#+XSLT:
+
 * 敏捷开发
 ** 敏捷联盟宣言
 - 个体和交互胜过过程和工具 :: 人是获得成功的最为重要的因素。如果团队中没有优秀的成员，那么就是使用好的过程也不能从失败中挽救项目。
@@ -102,18 +118,18 @@
 ** Facade模式和Mediator模式
 *** facade模式
 - 使用场景 :: 当想要为一组具有复杂且全面的接口的对象提供一个简单且特定的接口时，可以使用Facade模式，如下图所示的场景。
-#+ATTR_HTML: :width 400 :title Facade模式封装数据库操作 
+#+ATTR_HTML: :width 500 :title Facade模式封装数据库操作 
 #+CAPTION: Facade模式封装数据库操作
-[[file:dbFacade.png][DB Facade]]
+[[file:dbFacade.png]]
 - 基于约定 :: 使用Facade模式意味着开发人员已经接受了所有数据库调用都要通过DB类的约定。如果任务一部分代码越过该Facade直接去访问java.sql，
 	  那么就违反了该约定。基于约定，DB类成为了java.sql包的惟一代理。
 *** Mediator模式
 - 示例 :: 图中展示用一个JList和一个JTextField构造了一个QuickEntryMediator类的实例。QuickEntryMediator向JTextField注册了一个匿名的
 DocumentListener，每当文本发生变化时,这个listener就调用textFieldChanged方法。接着，该方法在JList中査找以这个文本为前缀的元素并选中它。
 JList和JTextField的使用者并不知道该Mediator的存在。它安静地呆着，把它的策略施加在那些对象上，而无需它们的允许或者知晓。
-#+ATTR_HTML: :width 400 :title Facade模式封装数据库操作 
-#+CAPTION: Facade模式封装数据库操作
-[[file:Mediator%E6%A8%A1%E5%BC%8F.png][QuickEntryMediator]]
+#+ATTR_HTML: :width 400 :title Mediator模式
+#+CAPTION: Mediator模式
+[[file:Mediator.png]]
 *** 对比
 - 相同点 :: 两个模式都有着共同的目的，它们都把某种策略施加到另外一组对象上，这些对象不需要知道具体的策略细节。
 - 不同点 :: Facade通常是约定的关注点，每个人都同意去使用该facade而不是隐藏于其下的对象；而Mediator则对用户是隐藏的，
@@ -158,7 +174,9 @@ if (e != null && e.isTimeToPay(today))
 - 场景 :: 考虑如上代码，我们常使用这&&这样的表达式进行空值检查，大多数人也曾由于忘记进行null检查而受挫。该惯用方法虽然常见，
 但却是丑陋且易出错的。通过让getEmployee方法抛出异常，可以减少出错的可能，但try/catch块比null检查更加丑陋。
 这种场景下可以使用Null Object模式来解决这些问题（如下图所示）。
-[[file:NullObejct%E6%A8%A1%E5%BC%8F.png][Null Obejct模式]]
+#+ATTR_HTML: :width 400 :title Null Object模式
+#+CAPTION: Null Object模式
+[[file:NullObejct.png]]
 ** Facotry模式
 - 问题示例 :: 依赖倒置原则(DIP)告诉我们应该优先依赖于抽象类，而避兔依赖于具体类。当这些具体类不稳定时，更应该如此。
 	因此，该代码片段违反了这个原则： ~Circle c= new Circle(origin， 1)~ ，Circle是一个具体类。
@@ -167,7 +185,9 @@ if (e != null && e.isTimeToPay(today))
 	  所以，在正在进行的开发期间，如果具体类是高度易变的，那么该模式是非常有用的。
 *** 可替换的工厂
 使用工厂的一个主要好处就是可以把工厂的一种实现替换为另一种实现。这样，就可以在应用程序中替换一系列相关的对象。
-[[file:%E5%8F%AF%E6%9B%BF%E6%8D%A2%E7%9A%84%E5%B7%A5%E5%8E%82.png][可替换的工厂]]
+#+ATTR_HTML: :width 500 :title 可替换的工厂
+#+CAPTION: 可替换的工厂
+[[file:Factory.png]]
 *** 合理使用工厂模式
 严格按照DIP来讲，必须要对系统中所有的易变类使用工厂。此外，Factory模式的威力也是诱人的。这两个因素有时会诱使开发者把工厂作为缺省方式使用。
 我不推荐这种极端的做法。我不是一开始就使用工厂，只是在非常需要它们的情况下，我才把它们放入到系统中。
@@ -178,7 +198,9 @@ if (e != null && e.isTimeToPay(today))
 如果缺省地使用它们，就会极大地增加扩展设计的难度。为了创建一个新类，就必须要创建出至少4个新类：
 两个表示该新类及其工厂的接口类，两个实现这些接口的具体类。
 ** Composite模式
-[[file:Composite%E6%A8%A1%E5%BC%8F.png][Composite模式]]
+#+ATTR_HTML: :width 400 :title Composite模式
+#+CAPTION: Composite模式
+[[file:Composite.png]]
 - 描述 :: 上图展示了Composite模式的基本结构。基类Shape有两个派生类：Circle和Square，第三个派生类是一个组合体。
 CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeShape的draw()方法时，它就把这个方法委托给列表中的每一个Shape实例。
 因此，一个CompositeShape实例就像是一个单一的Shape，可以把它传递给任何使用Shape的函数或者对象，并且它表现得就像是个Shape。
@@ -188,7 +210,10 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 	  一种可行的方式是不停轮询获取最新的时间戳，然后计算时间。但时间戳只有在捕获到时钟中断时，都会发生变化，轮询是会造成CPU的极大浪费。
 - 描述 :: 另一种解决方案时在计时器时间发生变化时，告知数字时钟，数字时钟既而更新时间。这里，数字时钟为计时器的观察者(Observer)。
 - 示例 :: 
-	[[file:Observer%E6%A8%A1%E5%BC%8F%E7%A4%BA%E4%BE%8B.png][Observer模式示例]]
+	#+ATTR_HTML: :width 400 :title Observer模式示例
+	#+CAPTION: Observer模式示例
+	[[file:Observer.png]]
+
 	其中MockTimeSink是MockTimeSource的观察者，通过TestClockDriver将MockTimeSink注册到MockTimeSource的观察者队列中。
 	当MockTimeSource发生变化时，它会调用notifyObservers()方法遍历各个观察者，并调用其update()方法。
 	MockTimeSource实现观察者(Observer)接口，当被通知时，获取当前时间并展示。
@@ -197,13 +222,18 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 ** Abstract Server模式、Adapter模式和Bridge模式
 *** Abstract Server模式
 - 问题 :: 考虑实现一个简单的开关控制器，可以控制灯泡的开关，一种简单的设计如下  
-	  [[file:%E7%AE%80%E5%8D%95%E7%9A%84%E7%81%AF%E6%B3%A1%E5%BC%80%E5%85%B3%E5%AE%9E%E7%8E%B0.png][简单的灯泡开关实现]]
-	  这个设计违反了两个设计原则：依赖倒置原则(DIP)和开放封闭原则(OCP)。对DIP的违反是明显的，Switch依赖了具体类Light。
-	  DIP告诉我们要优先依赖于抽象类。对OCP的违反虽然不那么明显，但是更加切中要害：在任何需要Switch的地方都要附带上Light，
-	  不能容易地扩展Switch去管理除Light外的其他对象，如当需要控制音乐的开关时（比如在回家后，打开门，同时打开灯光和音乐的开关）。
+	#+ATTR_HTML: :width 400 :title 一种简单灯泡实现
+	#+CAPTION: 一种简单灯泡实现
+	[[file:SwitchExample.jpg]]
+
+	这个设计违反了两个设计原则：依赖倒置原则(DIP)和开放封闭原则(OCP)。对DIP的违反是明显的，Switch依赖了具体类Light。
+	DIP告诉我们要优先依赖于抽象类。对OCP的违反虽然不那么明显，但是更加切中要害：在任何需要Switch的地方都要附带上Light，
+	不能容易地扩展Switch去管理除Light外的其他对象，如当需要控制音乐的开关时（比如在回家后，打开门，同时打开灯光和音乐的开关）。
 - 描述 :: 为了解决这个问题，可以使用一个最简单的设计模式：Abstract Server模式。在Switch和Light之间引入一个接口，
 	这样就使得Switch能够控制任何实现了这个接口的东西，这立即就满足了DIP和OCP
-	[[file:AbstractServer%E6%A8%A1%E5%BC%8F.png][AbstractServer模式]]
+	#+ATTR_HTML: :width 400 :title AbstractServer模式
+	#+CAPTION: AbstractServer模式
+	[[file:AbstractServer.png]]
 - 谁拥有接口 :: 接口属于它的客户，而不是它的派生类。
 	   客户和接口之间的逻辑绑定关系要强于接口和它的派生类之间的逻辑绑定关系。
 	   它们之间的关系强到在没有Switchable有的情况下就无法使用Switch；但是，在没有Light的情况下却完全可以使用Switch。
@@ -216,11 +246,15 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 	另外，如果无法把继承关系加到Light上该怎么办呢，比如从第三方购买了Light而没有源代码。这个时候可以使用Adapter模式。
 - 描述 :: 定义一个适配器，使其继承Switchable接口，并将所有接口的实现委托给实际的Light执行。
 	事实上，Light对象中甚至不需要有turnOn和turnOff方法。
-	[[file:Adapter%E6%A8%A1%E5%BC%8F.png][Adapter模式]]
+	#+ATTR_HTML: :width 400 :title Adapter模式
+	#+CAPTION: Adapter模式
+	[[file:Adapter.png]]
 **** 使用Adapter模式隐藏杂凑体
 - 原设计 :: 请考虑一下下图中的情形：有大量的调制解调器客户程序，它们都使用Modem接口。
 	 Modem接口被几个派生类HayesModem、UsRoboticsModem和ErniesModem实现。这是常见的方案，它很好地遵循了OCP、LSP和DIP。
-	 [[file:%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8%E9%97%AE%E9%A2%98.png][调制解调器问题]]
+	 #+ATTR_HTML: :width 400 :title 调制解调器问题
+	 #+CAPTION: 调制解调器问题
+	 [[file:ModemQuestion.png]]
 - 搅乱设计的需求变动 :: 现在假定客户提出了一个新的需求：有某些种类的调制解调器是不拨号的，它们被称为专用调制解调器，
 	       因为它们位于一条专用连接的两端。有几个新应用程序使用这些专用调制解调器，它们无需拨号，我们称这些使用者为DedUser。
 	       但是，客户希望当前所有的调制解调器客户程序都可以使用这些专用调制解调器，他们不希望去更改许许多多的调制解调器客户应用程序，
@@ -228,7 +262,9 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 - 无法使用的理想解决方案 :: 如果能选择的话，我们会把系统的设计更改为下图所示的那样。我们会使用ISP把拨号和通信功能分离为两个不同的接口。
 		 原来的调制解调器实现这两个接口，而调制解调器客户程序使用这两个接口。DedUser只使用Modem接口，
 		 而DedicateModem只实现Modem接口。糟糕的是，这样做会要求我们更改所有的调制解调器客户程序，这是客户不允许的。
-		 [[file:%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8%E9%97%AE%E9%A2%98%E7%9A%84%E7%90%86%E6%83%B3%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.png][调制解调器问题的理想解决方案]]
+		 #+ATTR_HTML: :width 400 :title 理想解决方案
+		 #+CAPTION: 理想解决方案
+		 [[file:ModemPerfectPlan.png]]
 - 一种简单的解决方案 :: 一个可能的解决方案是让DedicatedModem从Modem派生并且把dial方法和hangup方法实现为空
 - 存在的问题 :: 两个退化函数预示着我们可能违反了LSP；另外，基类的使用者可能期望dial和hangup会明显地改变调制解调器的状态。
 	    DedicatedModem中的退化实现可能会违背这些期望：假定调制解调器客户程序期望在调用dial方法前调制解调器处于体眠状态，
@@ -240,7 +276,9 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 	    如果这样做的话，那么所有的调制解调器客户程序都可以正常工作并且也不必更改。只要让DedUser去调用dial和hangup即可。
 	    你可能认为这种做法会令那些正在实现DedUser的人觉得非常沮丧，他们明明在使用DedicatedModem。
 	    为什么他们还要去调用dial和hangup呢?不过，他们的软件还没有开始编写，所以还比较容易让他们按照我们的想法去做。
-	    [[file:%E6%9D%82%E5%87%91%E4%BD%93%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.png][杂凑体解决方案]]
+		 #+ATTR_HTML: :width 500 :title 使用杂凑体解决问题
+		 #+CAPTION: 使用杂凑体解决问题
+		 [[file:ModemMixture.png]]
 - 丑陋的杂凑体 :: 几个月后，已经有了大量的DedUser，此时客户提出了一个新的更改。客户希望能够拨打任意长度的电话号码，
 	    他们需要去拨打国际电话、信用卡电话、PIN标识电话等等，而原有的电话号码使用char[10]存储电话号码。
 	    显然，所有的调制解调器客户程序都必须更改，客户同意了对调制解调器客户程序的更改。
@@ -250,19 +288,25 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 		  在这个适配器的dial和hangup的实现中去模拟连接状态，同时把send和receive调用委托给DedicatedModem。
 		  请注意，杂凑体仍然存在，适配器仍然要模拟连接状态。然而，请注意，所有的依赖关系都是从适配器发起的。
 		  杂凑体和系统隔离，藏身于几乎无人知晓的适配器中，只有在某处的某个工厂才可能会实际依赖于这个适配器。
-		  [[file:%E4%BD%BF%E7%94%A8Adapter%E6%A8%A1%E5%BC%8F%E8%A7%A3%E5%86%B3%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8%E9%97%AE%E9%A2%98.png][使用Adapter模式解决调制解调器问题]]
+		 #+ATTR_HTML: :width 500 :title 使用Adapter模式解决问题
+		 #+CAPTION: 使用Adapter模式解决问题
+		 [[file:ModemAdapter.png]]
 *** Bridge模式
 - 解决调制解调器问题的另一种思路 :: 看待调制解调器问题，还有另外一个方式，对于专用调制解调器的，
      需要向Modem类型层次结构中增加了一个新的自由度，我们可以让DialModem和DedicatedModem从Modem派生。
      如下图所示，每一个叶子节点要么向它所控制的硬件提供拨号行为，要么提供专用行为。
      DedicatedHayesModem对象以专用的方式控制着Hayes品牌的调制解调器，而HayesDialModem则以拨号的方式控制着Hayes品牌的调制解调器。
-     [[file:%E9%80%9A%E8%BF%87%E6%89%A9%E5%B1%95%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84%E8%A7%A3%E5%86%B3%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8%E9%97%AE%E9%A2%98.png][通过扩展层次结构解决调制解调器问题]]
+		 #+ATTR_HTML: :width 500 :title 扩展层次结构解决问题
+		 #+CAPTION: 扩展层次结构解决问题
+		 [[file:ModemExtension.png]]
 - 存在的问题 :: 这不是一个理想的结构，每当增加一款新硬件时，就必须创建两个新类个针对专用的情况，一个针对拨号的情况。
 	   而每当增加一种新连接类型时，就必须创建三个新类，分别对应三款不同的硬件。
 	   如果这两个自由度根本就是不稳定的，那么不用多久，就会出现大量的派生类。
 - Bridge模式的使用 :: 在类型层次结构具有多个自由度的情况中，Bridge模式通常是有用的，我们可以把这些层次结构分开并通过桥把它们结合到一起，
 		 而不是把它们合并起来。
-		 [[file:Bridge%E6%A8%A1%E5%BC%8F%E8%A7%A3%E5%86%B3%E8%B0%83%E5%88%B6%E8%A7%A3%E8%B0%83%E5%99%A8%E9%97%AE%E9%A2%98.png][Bridge模式解决调制解调器问题]]
+		 #+ATTR_HTML: :width 600 :title 使用Bridge模式解决问题
+		 #+CAPTION: 使用Bridge模式解决问题
+		 [[file:ModemBridge.png]]
 - Bridge模式的优势 :: 这个结构虽然复杂，但是很有趣，改造为该模式时，不会影响到调制解调器的使用者，并且还完全分离了连接策略和硬件实现。
 		 ModemConnectController的每个派生类代表了一个新的连接策略。
 		 在这个策略的实现中可以使用sending、receiveImp、dialImp和hangup，新imp方法的增加不会影响到使用者。
@@ -279,7 +323,9 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 - Proxy模式 :: 请考虑一下Product类，我们通过用一个接口来代替它实现了对它的代理，这个接口具有Product类的所有方法。
 	     ProductImplementation类是一个简单的数据对象，同时ProductDbProxy实现了Product中的所有方法，
 	     这些方法从数据库中取出产品，创建一个ProductImplementation实例，然后再把逻辑操作委托给这个实例。
-	     [[file:Proxy%E6%A8%A1%E5%BC%8F.png][Proxy模式]]
+	     #+ATTR_HTML: :width 400 :title Proxy模式
+	     #+CAPTION: Proxy模式
+	     [[file:Proxy.jpg]]
 - 优点 :: Product的使用者和ProductImplementation都不知道所发生的事情，数据库操作在这两者都不知道的情况下被插入到应用程序中。
 	这正是 PROXY模式的优点。理论上,它可以在两个协作的对象都不知道的情况下被插入到它们之间。
 	因此,使用它可以跨越像数据库或者网络这样的障碍,而不会影响到任何一个参与者。
@@ -289,7 +335,9 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
      同时提供了一组实现方法作为实现read和write所需要的工具。在PersistentProduct的read和write的实现中，
      会使用这些工具把Product的所有数据字段从数据库中读出或者写入到数据库。
      现使PersistentProduct同时继承Product的PersistentObject类，如下图所示。
-     [[file:StairwayToHaven%E6%A8%A1%E5%BC%8F.png][StairwayToHaven模式]]
+	     #+ATTR_HTML: :width 300 :title StairwayToHaven模式
+	     #+CAPTION: StairwayToHaven模式
+	     [[file:StairwayToHaven.png]]
 - 优势 :: Product的使用者并不需要知道PersistentObject，在需要数据库操作的少量代码中，则可以将类型向下转换（如dynamic_cast），
 	将Product类转换成实际的PersistentObject类，调用其write和read方法。
 	这样，就可以将有关数据库的知识和应用程序的业务规则完全分离开来。
@@ -305,7 +353,9 @@ CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeS
 *** Visitor模式
 Visitor模式使用了双重分发技术。之所以被称为双重分发是因为它涉及了两个多态分发，第一个分发是accept函数，
 该分发辨别出所调用的accept方法所属对象的类型，第二个分发是viist方法，它辨别出要执行的特定函数。（如下图所示）
-[[file:Visitor%E6%A8%A1%E5%BC%8F.png][Visitor模式]]
+#+ATTR_HTML: :width 500 :title Visitor模式
+#+CAPTION: Visitor模式
+[[file:Visitor.png]]
 
 Visitor模式中的两次分发形成了个功能矩阵，在调制解调器的例子中，矩阵的一条轴是不同类型的调制解调器，
 另一条轴是不同类型的操作系统。该矩阵的每个单元都被一项功能填充，该功能很好的解决把特定的调制解调器初始化为可以在特定的操作系统中使用的问题。
@@ -316,7 +366,10 @@ Visitor模式中的两次分发形成了个功能矩阵，在调制解调器的�
 	并且也很难向被访问层次结构中增加新的派生类。
 - Acyclic Visitor模式 :: 该变体把Visitor基类(modemVisitor)变成退化的，从而解除了依赖环，这个类中不存在任何方法，
      使它不再依赖于被访问层次结构的派生类（如下图所示）。
-     [[file:AcyclicVisitor%E6%A8%A1%E5%BC%8F.png][AcyclicVisitor模式]]
+     #+ATTR_HTML: :width 500 :title AcyclicVisitor模式
+     #+CAPTION: AcyclicVisitor模式
+     [[file:AcyclicVisitor.png]]
+
      对于被访问层次结构的每个派生类，都有个对应的访问者接口，且访问者派生类派生自这些访问者接口。
      这是一个从派生类到接口的180度旋转，被访问派生类中的accept函数把Visitor基类转型(cast)为适当的访问者接口。如果转型成功，
      该方法就调用相应的visit函数。
@@ -337,7 +390,9 @@ Visitor模式中的两次分发形成了个功能矩阵，在调制解调器的�
 	但是否大声拨号与调制解调器的内在功能没有任何关系，这违反了单一职责原则。
 - Decorator模式 :: Decorator模式通过创建一个名为LoudDialModem的全新类来解决这个问题。 LoudDialModem派生自Modem，
 		 并且携有的一个Modem实例，它捕获对dial函数的调用并在委托前拨号动作前把音量设高。
-		 [[file:Decorator%E6%A8%A1%E5%BC%8F.png][Decorator模式]]
+		 #+ATTR_HTML: :width 400 :title Decorator模式
+		 #+CAPTION: Decorator模式
+		 [[file:Decorator.png]]
 *** Extension Object模式
 还有另外一种方法可以在不更改类层次结构的情况下向其中增加功能，那就是使用Extension Object模式。
 这个模式虽然比其他的模式复杂一些，但是它也更强大、更灵活一些。
@@ -348,7 +403,9 @@ Visitor模式中的两次分发形成了个功能矩阵，在调制解调器的�
      我们也可以使用Extension Object模式（如下图所示）：Part接口定义了添加扩展对象和获取扩展对象的方法，
      同时，针对Assembly和PiecePart都实现了相应的XML和CVS导出能力的类，剩下只需要通过类构造方法或使用工厂模式，
      将扩展对象装配到相应的数据对象中即可。
-     [[file:ExtensionObject%E6%A8%A1%E5%BC%8F.png][ExtensionObject模式]]
+     #+ATTR_HTML: :width 600 :title ExtensionObject模式
+     #+CAPTION: ExtensionObject模式
+     [[file:ExtensionObject.png]]
 ** State模式
 - 使用场景 :: 有限状态机(FSM)是软件宝库中最有用的抽象之一，
 	  它们提供了一个简单、优雅的方法去揭示和定义复杂系统的行为。
@@ -366,14 +423,18 @@ Visitor模式中的两次分发形成了个功能矩阵，在调制解调器的�
 	     其中TurnstyleLockedState实现了LOCKED状态下的相应动作，
 	     TurnstyleUnlockedState的方法实现了UNLOCKED状态下的相应动作。
 	     为了改变FSM的状态，就要把这两个派生类之一的实例赋给Turnstyle对象中的引用。
-	     [[file:State%E6%A8%A1%E5%BC%8F.png][State模式]]
+	     #+ATTR_HTML: :width 400 :title State模式
+	     #+CAPTION: State模式
+	     [[file:State.png]]
 - State模式与Strategy模式对比 :: 这两个模式都有一个上下文类，都委托给一个具有几个派生类的多态基类。
      不同之处在于，在State模式中，派生类持有回指向上下文类的引用，所有状态设置方法都在上下文类中实现，
      派生类的主要功能是使用这个引用选择并调用上下文类中的方法进行状态转移。
      而在Strategy模式中，不存在这样的限制以及意图，Strategy的派生类不必持有指向上下文类的引用，
      并且也不需要去调用上下文类的方法。所以，所有的State模式实例同样也是Strategy模式实例，
      但是并非所有的Strtegy模式实例都是State模式实例。
-     [[file:State%E4%B8%8EStrategy%E6%A8%A1%E5%BC%8F%E5%AF%B9%E6%AF%94.png][State与Strategy模式对比]]
+     #+ATTR_HTML: :width 500 :title State模式与Strategy模式对比
+     #+CAPTION: State模式与Strategy模式对比
+     [[file:StateAndStrategy.png]]
 - 优势 :: State模式彻底地分离了状态机的逻辑和动作，动作是在Context类中实现的，
 	而逻辑则是分布在State类的派生类中，这就使得二者可以非常容易地独立变化、互不影响。
 	例如，只要使用State类的另外一个派生类，
@@ -474,7 +535,9 @@ SAP和SDP结合在一起形成了针对包的DIP原则。这样说是准确的�
 - A是一个测量包抽象程度的度量标准。它的值就是包中抽象类的数目和全部类的数目的比值： $A = N_a / N_c$
 ** 主序列
 现在,我们来定义稳定性(I)和抽象性(A)之间的关系。
-[[file:%E7%A8%B3%E5%AE%9A-%E6%8A%BD%E8%B1%A1%E5%9D%90%E6%A0%87-%E8%A2%AB%E6%8E%92%E9%99%A4%E5%8C%BA%E5%9F%9F.png][被排除区域]]
+#+ATTR_HTML: :width 300 :title 稳定-抽象坐标-被排除区域
+#+CAPTION: 稳定-抽象坐标-被排除区域
+[[file:RegionExcluded.png]]
 
 我们可以创建一个以A为纵轴，I为横轴的坐标图。如果在坐标图中绘制出两种“好”的包类型，会发现那些最稳定、最抽象的包位于左上角(0，1)处。
 那些最不稳定、最具体的包位于右下角(1,0)处。

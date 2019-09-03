@@ -1,0 +1,1465 @@
+
+(("dateCreated" :datetime (23919 3936)) ("description" . "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"cn-zh\" xml:lang=\"cn-zh\">
+<head>
+<!-- 2019-09-04 三 01:03 -->
+
+
+<title>《敏捷软件开发──原则、模式与实践》阅读笔记</title>
+
+
+
+<style type=\"text/css\">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per \"defun org-babel-execute\"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf \" \")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type=\"text/javascript\">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = \"code-highlighted\";
+     elem.className   = \"code-highlighted\";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type=\"text/x-mathjax-config\">
+    MathJax.Hub.Config({
+        displayAlign: \"center\",
+        displayIndent: \"0em\",
+
+        \"HTML-CSS\": { scale: 100,
+                        linebreaks: { automatic: \"false\" },
+                        webFont: \"TeX\"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: \"false\" },
+              font: \"TeX\"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: \"AMS\"},
+               MultLineWidth: \"85%\",
+               TagSide: \"right\",
+               TagIndent: \".8em\"
+             }
+});
+</script>
+<script type=\"text/javascript\"
+        src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML\"></script>
+</head>
+<body>
+<div id=\"content\">
+<h1 class=\"title\">《敏捷软件开发──原则、模式与实践》阅读笔记</h1>
+<div id=\"table-of-contents\">
+<h2>Table of Contents</h2>
+<div id=\"text-table-of-contents\">
+<ul>
+<li><a href=\"#org5fb0cb0\">1. 敏捷开发</a>
+<ul>
+<li><a href=\"#orgd7bc948\">1.1. 敏捷联盟宣言</a></li>
+<li><a href=\"#org23bef77\">1.2. 敏捷开发的原则</a></li>
+</ul>
+</li>
+<li><a href=\"#orgda573a5\">2. 极限编程</a></li>
+<li><a href=\"#orga3d7017\">3. 设计原则</a>
+<ul>
+<li><a href=\"#org2972e36\">3.1. 单一职责原则（SRP）</a></li>
+<li><a href=\"#org921302b\">3.2. 开放——封闭原则（OCR）</a>
+<ul>
+<li><a href=\"#orgac6d7c4\">3.2.1. 遵循开放──封闭原则设计出的模块具有两个主要的特征</a></li>
+</ul>
+</li>
+<li><a href=\"#org7184ede\">3.3. Liskov替换原则（LSP）</a></li>
+<li><a href=\"#orgd4c12a0\">3.4. 依赖倒置原则（DIP）</a></li>
+<li><a href=\"#org068d5a1\">3.5. 接口隔离原则（ISP）</a></li>
+</ul>
+</li>
+<li><a href=\"#org7ad5f53\">4. 常用设计模式</a>
+<ul>
+<li><a href=\"#org017977a\">4.1. Command模式和Active Object</a>
+<ul>
+<li><a href=\"#org8db08cb\">4.1.1. Command模式的优点</a></li>
+<li><a href=\"#org788cc2a\">4.1.2. Active Object模式</a></li>
+</ul>
+</li>
+<li><a href=\"#org8203851\">4.2. Template Method模式和Strategy模式：继承和委托</a>
+<ul>
+<li><a href=\"#org322aa65\">4.2.1. Template Method模式</a></li>
+<li><a href=\"#orgeede604\">4.2.2. Strategy模式</a></li>
+<li><a href=\"#orgb873c4b\">4.2.3. 对比</a></li>
+</ul>
+</li>
+<li><a href=\"#org92fa26e\">4.3. Facade模式和Mediator模式</a>
+<ul>
+<li><a href=\"#org0185cbc\">4.3.1. facade模式</a></li>
+<li><a href=\"#orgafb42e3\">4.3.2. Mediator模式</a></li>
+<li><a href=\"#org71125e7\">4.3.3. 对比</a></li>
+</ul>
+</li>
+<li><a href=\"#orga87cdb2\">4.4. Singleton模式和Monostate模式</a>
+<ul>
+<li><a href=\"#org087b7e0\">4.4.1. Singleton模式</a></li>
+<li><a href=\"#orga076ac7\">4.4.2. Monostate模式</a></li>
+<li><a href=\"#orgeb58d3d\">4.4.3. 对比</a></li>
+</ul>
+</li>
+<li><a href=\"#orgf91f543\">4.5. Null Object模式</a></li>
+<li><a href=\"#org37f3322\">4.6. Facotry模式</a>
+<ul>
+<li><a href=\"#org9be88e1\">4.6.1. 可替换的工厂</a></li>
+<li><a href=\"#orgff6b6f5\">4.6.2. 合理使用工厂模式</a></li>
+</ul>
+</li>
+<li><a href=\"#org1eef8c4\">4.7. Composite模式</a></li>
+<li><a href=\"#org52ffaca\">4.8. Observer模式</a></li>
+<li><a href=\"#org118d224\">4.9. Abstract Server模式、Adapter模式和Bridge模式</a>
+<ul>
+<li><a href=\"#orgbde1688\">4.9.1. Abstract Server模式</a></li>
+<li><a href=\"#org37fdfc8\">4.9.2. Adapter模式</a></li>
+<li><a href=\"#orga418b66\">4.9.3. Bridge模式</a></li>
+</ul>
+</li>
+<li><a href=\"#orgd577e47\">4.10. Proxy模式和Stairway To Heaven模式</a>
+<ul>
+<li><a href=\"#orgb8e7089\">4.10.1. Proxy模式</a></li>
+<li><a href=\"#org7bc9565\">4.10.2. Stairway To Heaven模式</a></li>
+</ul>
+</li>
+<li><a href=\"#org36730f8\">4.11. Visitor设计模式系列</a>
+<ul>
+<li><a href=\"#org5e86ea4\">4.11.1. Visitor模式</a></li>
+<li><a href=\"#org0115563\">4.11.2. Acyclic Visitor模式</a></li>
+<li><a href=\"#orgb7aa723\">4.11.3. Decorator模式</a></li>
+<li><a href=\"#org8420d17\">4.11.4. Extension Object模式</a></li>
+</ul>
+</li>
+<li><a href=\"#org7a07167\">4.12. State模式</a></li>
+</ul>
+</li>
+<li><a href=\"#orgcc12bac\">5. 包的设计原则</a>
+<ul>
+<li><a href=\"#orgd4dc73e\">5.1. 粒度：包的内聚性原则</a>
+<ul>
+<li><a href=\"#orgb3de4fc\">5.1.1. 重用发布等价原则（Release Reuse Equivalency Principle）</a></li>
+<li><a href=\"#orgb753d43\">5.1.2. 共同重用原则（Common Reuse Principle）</a></li>
+<li><a href=\"#org5618b80\">5.1.3. 共同封闭原则（Common Closure Principle）</a></li>
+<li><a href=\"#org17a238f\">5.1.4. 总结</a></li>
+</ul>
+</li>
+<li><a href=\"#org0c2119c\">5.2. 稳定性：包的耦合性原则</a>
+<ul>
+<li><a href=\"#org6bc5727\">5.2.1. 无环依赖原则</a></li>
+</ul>
+</li>
+<li><a href=\"#org056bcea\">5.3. 启发：不能自顶向下设计包的结构</a></li>
+<li><a href=\"#org375cc2c\">5.4. 稳定依赖原则（Stable Dependencies Principle）</a>
+<ul>
+<li><a href=\"#org8775e17\">5.4.1. 稳定性</a></li>
+<li><a href=\"#org1757a8d\">5.4.2. 稳定性度量</a></li>
+</ul>
+</li>
+<li><a href=\"#orgd7693f3\">5.5. 稳定抽象原则（Stable Abstractions Principle）</a>
+<ul>
+<li><a href=\"#org066d474\">5.5.1. 抽象性度量</a></li>
+</ul>
+</li>
+<li><a href=\"#org4459420\">5.6. 主序列</a>
+<ul>
+<li><a href=\"#org3691d2e\">5.6.1. 到主序列的距离</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id=\"outline-container-org5fb0cb0\" class=\"outline-2\">
+<h2 id=\"org5fb0cb0\"><span class=\"section-number-2\">1</span> 敏捷开发</h2>
+<div class=\"outline-text-2\" id=\"text-1\">
+</div>
+<div id=\"outline-container-orgd7bc948\" class=\"outline-3\">
+<h3 id=\"orgd7bc948\"><span class=\"section-number-3\">1.1</span> 敏捷联盟宣言</h3>
+<div class=\"outline-text-3\" id=\"text-1-1\">
+<dl class=\"org-dl\">
+<dt>个体和交互胜过过程和工具</dt><dd>人是获得成功的最为重要的因素。如果团队中没有优秀的成员，那么就是使用好的过程也不能从失败中挽救项目。
+但是，孬的过程却可以使最优秀的团队成员推动盗用。如果不能作为一个团队进行工作，那么即使拥有最优秀的成员也一样会惨败。</dd>
+<dt>可以工作的软件胜过面面俱到的文档</dt><dd>对于团队来说，编写并维护一份系统原理和结构方面的文档将总是一个好主意，
+但是那套文档应该是短小并且主题突出的。</dd>
+<dt>客户合作胜过合同谈判</dt><dd>成功的项目需要有序、频繁的客户反馈。不是依赖于合同或者关于工作的陈述，
+而是让软件的客户和开发团队密切地在一起工作，并尽量经常地提供反馈。</dd>
+<dt>响应变化胜过遵循计划</dt><dd>计划不能考虑得过远。道德，商务环境很可能会变化，这会会引起需求的变动。其次，一旦客户看到系统开始运作，
+他们很可能会改变需求。最后，即使我们熟悉需求，并且确信它们不会发迹，我们仍然不能很好地估算出开发它们需要的时间。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-org23bef77\" class=\"outline-3\">
+<h3 id=\"org23bef77\"><span class=\"section-number-3\">1.2</span> 敏捷开发的原则</h3>
+<div class=\"outline-text-3\" id=\"text-1-2\">
+<ol class=\"org-ol\">
+<li>我们最优先要做的是通过尽早的、待续的交付有价值的软件来使客户满意</li>
+<li>即使到了开发的后期，也欢迎改变需求。敏捷过程利用变化来为客户创造竞争优势。</li>
+<li>经常性地交付可以工作的软件，交付的间隔可以从几周到几个朋，交付的时间间隔越短越好。</li>
+<li>在整个项目开发期间，业务人员和开发人员必须天天都在一起工作。</li>
+<li>围绕被激励起来的个人来构建项目。给他们提供所需要的环境和支持，并且信任他们能够完成工作。</li>
+<li>在团队内部，最具有效果并且富有效率的传递信息的方法，就是面对面的交谈。</li>
+<li>工作的软件是首要的进度度量标准。</li>
+<li>敏捷过程提倡可持续的开发速度。责任人、开发者和用户应该能够保持一个长期的、恒定的开发速度。</li>
+<li>不能地关注优秀的技能和好的设计会增强敏捷能力。</li>
+<li>简单──使未完成的工作最大化的──是根本的。</li>
+<li>最好的构架、需求和设计出自于自组织的团队。</li>
+<li>每隔一定时间，团队会在如何才能更有效地工作方面进行反省，然后相应地对自己的行为进行调整。</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div id=\"outline-container-orgda573a5\" class=\"outline-2\">
+<h2 id=\"orgda573a5\"><span class=\"section-number-2\">2</span> 极限编程</h2>
+<div class=\"outline-text-2\" id=\"text-2\">
+<p>
+极限编程是敏捷方法中最著名的一个。它由一系列简单却互相依赖的实践组成。这些实践结合在一起形成了一个胜于部分结合的整体。
+</p>
+
+<ol class=\"org-ol\">
+<li>客户作为团队成员</li>
+<li>用户素材</li>
+<li>短交付周期</li>
+<li>验收测试</li>
+<li>结对编程</li>
+<li>测试驱动的开发方法</li>
+<li>集体所有权</li>
+<li>持续集成</li>
+<li>可持续的开发速度</li>
+<li>开放的工作空间</li>
+<li>计划游戏</li>
+<li>简单的设计</li>
+<li>重构</li>
+<li>隐喻</li>
+</ol>
+</div>
+</div>
+
+<div id=\"outline-container-orga3d7017\" class=\"outline-2\">
+<h2 id=\"orga3d7017\"><span class=\"section-number-2\">3</span> 设计原则</h2>
+<div class=\"outline-text-2\" id=\"text-3\">
+</div>
+<div id=\"outline-container-org2972e36\" class=\"outline-3\">
+<h3 id=\"org2972e36\"><span class=\"section-number-3\">3.1</span> 单一职责原则（SRP）</h3>
+<div class=\"outline-text-3\" id=\"text-3-1\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>就一个类而言，应该仅有一个引起它变化的原因。</dd>
+<dt>什么是职责</dt><dd>在SRP中,我们把职责定义为“变化的原因”。如果你能够想到多于一个的动机去改变一个类，那么这个类就具有多于一个的职责。
+有时,我们很难注意到这一点。我们习贯于以组的形式去考虑职责。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-org921302b\" class=\"outline-3\">
+<h3 id=\"org921302b\"><span class=\"section-number-3\">3.2</span> 开放——封闭原则（OCR）</h3>
+<div class=\"outline-text-3\" id=\"text-3-2\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>软件实体（类、模块、函数等等）应该是可以扩展的，但是不可修改的。</dd>
+</dl>
+</div>
+
+<div id=\"outline-container-orgac6d7c4\" class=\"outline-4\">
+<h4 id=\"orgac6d7c4\"><span class=\"section-number-4\">3.2.1</span> 遵循开放──封闭原则设计出的模块具有两个主要的特征</h4>
+<div class=\"outline-text-4\" id=\"text-3-2-1\">
+<dl class=\"org-dl\">
+<dt>对于扩展开放</dt><dd>模块的行为是可以扩展的。当应用的需求改变时，我们可以对模块进行扩展，使其具有满足那些改变的新行为。</dd>
+<dt>对于更改是封闭的</dt><dd>对模块行为进行扩展时，不必改动模块的源代码或者二进制代码。模块的二进制可执行版本，
+无论是可链接的库、DLL或者Java的.jar文件，都无需改动。</dd>
+</dl>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org7184ede\" class=\"outline-3\">
+<h3 id=\"org7184ede\"><span class=\"section-number-3\">3.3</span> Liskov替换原则（LSP）</h3>
+<div class=\"outline-text-3\" id=\"text-3-3\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>子类型必须能够替换掉它们的基类型。</dd>
+<dt>相对满足</dt><dd>事实上，一个模型，如果孤立地看，里氏替换并不具有真正意义上的有效性，模型的有效性只能通过它的客户程序来表现。</dd>
+<dt>启发示方法</dt><dd><ol class=\"org-ol\">
+<li>在派生类中存在退化函数并不总是表示违反了LSP，但是当这种情况存在时，</li>
+<li>当在派生类中添加了其基类不会抛出的异常时，如果基类的使用者不期望这些异常，那么把它们添加到派生类的方法中应付导致不可替换性。
+此时要遵循LSP，要么就必须改变使用者的期望，要么派生类就不应该抛出这些异常。</li>
+</ol></dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-orgd4c12a0\" class=\"outline-3\">
+<h3 id=\"orgd4c12a0\"><span class=\"section-number-3\">3.4</span> 依赖倒置原则（DIP）</h3>
+<div class=\"outline-text-3\" id=\"text-3-4\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd><ul class=\"org-ul\">
+<li>高层模块不应该依赖于低层模块，二者都应该位赖于抽象。</li>
+<li>抽象不应该依赖于细节，细节应该依赖于抽象。</li>
+</ul></dd>
+<dt>解释</dt><dd>请注意这里的倒置不仅仅是依赖关系的倒置，它也是接口所有权的倒置。当应用了DIP时，往往是客户拥有抽象接口，
+而它们的服务者则从这些抽象接口派生。</dd>
+<dt>启发示规则──领事于抽象</dt><dd><ul class=\"org-ul\">
+<li>任何变量都不应该持有一个指向具体类的指针或者引用。</li>
+<li>任何类都不应该从具体类派生。</li>
+<li>任何方法都不应该覆写它的任何基类中的已经实现了的方法。</li>
+<li>如果一个具体类不太会改变，并且也不会创建其他类似的派生类，那么依赖于它并不会造成损害。</li>
+</ul></dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-org068d5a1\" class=\"outline-3\">
+<h3 id=\"org068d5a1\"><span class=\"section-number-3\">3.5</span> 接口隔离原则（ISP）</h3>
+<div class=\"outline-text-3\" id=\"text-3-5\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>不应该强制客户领事于它们不用的方法。如果强迫客户程序依赖于那些它们不使用的方法，
+那么这些客户程序就面临着由于这些未使用方法的改变所带来的变更，这无意中导致了所有客户程序之间的耦合。</dd>
+</dl>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org7ad5f53\" class=\"outline-2\">
+<h2 id=\"org7ad5f53\"><span class=\"section-number-2\">4</span> 常用设计模式</h2>
+<div class=\"outline-text-2\" id=\"text-4\">
+</div>
+<div id=\"outline-container-org017977a\" class=\"outline-3\">
+<h3 id=\"org017977a\"><span class=\"section-number-3\">4.1</span> Command模式和Active Object</h3>
+<div class=\"outline-text-3\" id=\"text-4-1\">
+</div>
+<div id=\"outline-container-org8db08cb\" class=\"outline-4\">
+<h4 id=\"org8db08cb\"><span class=\"section-number-4\">4.1.1</span> Command模式的优点</h4>
+<div class=\"outline-text-4\" id=\"text-4-1-1\">
+<ol class=\"org-ol\">
+<li>通过对命令概念的封装，可以解除系统的逻辑互联关系和实际连接的设备之前的耦合。</li>
+<li>另一个Command模式的常见用法是创建和执行事务操作。</li>
+<li>解耦数据和逻辑，可以将数据放在一个列表中，以后再进行实际的操作。</li>
+</ol>
+</div>
+</div>
+<div id=\"outline-container-org788cc2a\" class=\"outline-4\">
+<h4 id=\"org788cc2a\"><span class=\"section-number-4\">4.1.2</span> Active Object模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-1-2\">
+<dl class=\"org-dl\">
+<dt>描述</dt><dd>Active Object模式是实现多线程控制的一项古老的技术。
+控制核心对象维护了一个Command对象的链表。用户可以向链表中增加新的命令，或者调用执行动作，该动作只是遍历链表，执行并去除每个命令。</dd>
+<dt>RTC任务</dt><dd>采用该技术的变体一去构建多线程系统已经是并且将会一直是一个很常见的实践。这种类型的线程被称为run-to-completion任务（RTC），
+因为每个Command实例在下一个Command补全可以运行之前就运行完成了。RTC的名字意味着Command实例不会阻塞。</dd>
+<dt>共享运行时堆栈</dt><dd>Command实例一经运行就一定得完成的的赋予了RTC线程有趣的优点，寻就是它们共享同一个运行时堆栈。和传统的多线程中的线程不同，
+不必为每个RTC线程定义或者分配各处的运行时堆栈。这在需要大量线程的内存受限系统中是一个强大的优势。</dd>
+</dl>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org8203851\" class=\"outline-3\">
+<h3 id=\"org8203851\"><span class=\"section-number-3\">4.2</span> Template Method模式和Strategy模式：继承和委托</h3>
+<div class=\"outline-text-3\" id=\"text-4-2\">
+</div>
+<div id=\"outline-container-org322aa65\" class=\"outline-4\">
+<h4 id=\"org322aa65\"><span class=\"section-number-4\">4.2.1</span> Template Method模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-2-1\">
+<dl class=\"org-dl\">
+<dt>描述</dt><dd>Template Method模式展示了面向对象编程上诸多经典重用形式中的一种。其中通用算法被放置在基类中，
+并且通过继承在不同的具体上下文实现该通用算法。</dd>
+<dt>代价</dt><dd>继承是一种非常强的关系，派生类不可避免地要和它们的基类绑定在一起。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-orgeede604\" class=\"outline-4\">
+<h4 id=\"orgeede604\"><span class=\"section-number-4\">4.2.2</span> Strategy模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-2-2\">
+<dl class=\"org-dl\">
+<dt>描述</dt><dd>Strategy模式使用了一种非常不同的方法来倒置通用算法和具体实现之间的依赖关系。不是将通用的应用算法放进一个抽象基类中，
+而是将它放进一个具体类中，在该具体类中定义一个成员对象，该成员对象实现了实际需要执行的具体算法，
+在执行通用算法时，把具体工作委托给这个成员对象的所实现的抽象接口去完成。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-orgb873c4b\" class=\"outline-4\">
+<h4 id=\"orgb873c4b\"><span class=\"section-number-4\">4.2.3</span> 对比</h4>
+<div class=\"outline-text-4\" id=\"text-4-2-3\">
+<dl class=\"org-dl\">
+<dt>共同点</dt><dd>Template Method模式和Strategy模式都可以用来分离高层的算法和的具体实现细节，都允许高速的算法独立于它的具体实现细节重用。</dd>
+<dt>差异</dt><dd>Strategy模式也允许具体实现细节独立于高层的算法重用，不过要惟一些额外的复杂性、内存以及运行时间开销作为代价。</dd>
+</dl>
+</div>
+</div>
+</div>
+
+<div id=\"outline-container-org92fa26e\" class=\"outline-3\">
+<h3 id=\"org92fa26e\"><span class=\"section-number-3\">4.3</span> Facade模式和Mediator模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-3\">
+</div>
+<div id=\"outline-container-org0185cbc\" class=\"outline-4\">
+<h4 id=\"org0185cbc\"><span class=\"section-number-4\">4.3.1</span> facade模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-3-1\">
+<dl class=\"org-dl\">
+<dt>使用场景</dt><dd>当想要为一组具有复杂且全面的接口的对象提供一个简单且特定的接口时，可以使用Facade模式，如下图所示的场景。</dd>
+</dl>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010400632-1006481407.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010411849-1020175305.jpg\" width=\"500\" title=\"Facade模式封装数据库操作\" />
+</p>
+<p><span class=\"figure-number\">Figure 1: </span>Facade模式封装数据库操作</p>
+</div>
+<dl class=\"org-dl\">
+<dt>基于约定</dt><dd>使用Facade模式意味着开发人员已经接受了所有数据库调用都要通过DB类的约定。如果任务一部分代码越过该Facade直接去访问java.sql，
+那么就违反了该约定。基于约定，DB类成为了java.sql包的惟一代理。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-orgafb42e3\" class=\"outline-4\">
+<h4 id=\"orgafb42e3\"><span class=\"section-number-4\">4.3.2</span> Mediator模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-3-2\">
+<dl class=\"org-dl\">
+<dt>示例</dt><dd>图中展示用一个JList和一个JTextField构造了一个QuickEntryMediator类的实例。QuickEntryMediator向JTextField注册了一个匿名的</dd>
+</dl>
+<p>
+DocumentListener，每当文本发生变化时,这个listener就调用textFieldChanged方法。接着，该方法在JList中査找以这个文本为前缀的元素并选中它。
+JList和JTextField的使用者并不知道该Mediator的存在。它安静地呆着，把它的策略施加在那些对象上，而无需它们的允许或者知晓。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010420772-854630401.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010428928-173900011.jpg\" width=\"400\" title=\"Mediator模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 2: </span>Mediator模式</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org71125e7\" class=\"outline-4\">
+<h4 id=\"org71125e7\"><span class=\"section-number-4\">4.3.3</span> 对比</h4>
+<div class=\"outline-text-4\" id=\"text-4-3-3\">
+<dl class=\"org-dl\">
+<dt>相同点</dt><dd>两个模式都有着共同的目的，它们都把某种策略施加到另外一组对象上，这些对象不需要知道具体的策略细节。</dd>
+<dt>不同点</dt><dd>Facade通常是约定的关注点，每个人都同意去使用该facade而不是隐藏于其下的对象；而Mediator则对用户是隐藏的，</dd>
+</dl>
+<p>
+它的策略是既成事实而不是一项约定事务。
+</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-orga87cdb2\" class=\"outline-3\">
+<h3 id=\"orga87cdb2\"><span class=\"section-number-3\">4.4</span> Singleton模式和Monostate模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-4\">
+</div>
+<div id=\"outline-container-org087b7e0\" class=\"outline-4\">
+<h4 id=\"org087b7e0\"><span class=\"section-number-4\">4.4.1</span> Singleton模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-4-1\">
+<dl class=\"org-dl\">
+<dt>描述</dt><dd>Singleton是一个很简单的模式。Singleton实例是通过公有的静态方法instance()访问的，即使instance方法被多次调用，</dd>
+</dl>
+<p>
+每次返回的都是指向完全相同的实例的引用。Singleton类没有公有构造函数，所以如果不使用instance方法，就无法去创建它的实例。
+</p>
+<dl class=\"org-dl\">
+<dt>优点</dt><dd><ol class=\"org-ol\">
+<li>跨平台。使用合适的中间件(例如RMI)，可以把Singleton模式扩展为跨多个JVM和多个计算机工作</li>
+<li>适用于任何类：只需把一个类的构造函数变成私有的，并且在其中增加相应的静态函数和变量，就可以把这个类变为Singleton</li>
+<li>可以透过派生创建：给定一个类，可以创建它的一个Singleton子类。</li>
+<li>延迟求值(Lazy Evaluation):如果Singleton从未使用过,那么就决不会创建它。</li>
+</ol></dd>
+<dt>代价</dt><dd><ol class=\"org-ol\">
+<li>摧毁方法未定义：没有好的方法去推毁(destroy)一个Singleton，或者解除其职责。即使添加一个decommission方法把theInstance置为null，</li>
+</ol>
+<p>
+系统中的其他模块仍然持有对该Singleton实例的引用。这样，随后对instance方法的调用会创建另外一个实例，致使同时存在两个实例。
+这个问题在C++中尤为严重，因为实例可以被推毁，可能会导致去提领(dereference)一个已被摧毁的对象。
+</p>
+<ol class=\"org-ol\">
+<li>不能继承：从Singleton类派生出来的类并不是Singleton。如果要使其成为Singleton，必须要增加所需的静态函数和变量。</li>
+<li>效率问题：每次调用instance方法都会执行语句。就大多数调用而言，语句是多余的。（使用JAVA的初始化功能可避免）</li>
+<li>不透明性：Singleton的使用者知道它们正在使用一个Singleton，因为它们必须要调用instance方法</li>
+</ol></dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-orga076ac7\" class=\"outline-4\">
+<h4 id=\"orga076ac7\"><span class=\"section-number-4\">4.4.2</span> Monostate模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-4-2\">
+<dl class=\"org-dl\">
+<dt>描述</dt><dd>该模式通过把所有的变量都变成静态变量，使所有实例表现得象一个对象一样。</dd>
+<dt>优点</dt><dd><ol class=\"org-ol\">
+<li>透明性：使用Monostate对象和使用常规对象没有什么区别，使用者不需要知道对象是Monostate</li>
+<li>可派生性：Monostate的派生类都是Monostate。事实上，Monostate的所有派生类都是同一个Monostate的一部分。它们共享相同的静态变量。</li>
+<li>多态性：由于Monostate的方法不是静态的，所以可以在派生类中覆写它们。因此，不同的派生类可以基于同样的静态变量表现出不同的行为。</li>
+</ol></dd>
+<dt>代价</dt><dd><ol class=\"org-ol\">
+<li>不可转换性：不能透过派生把常规类转换成Monostate类。</li>
+<li>效率问题：因为Monostate是真正的对象，所以会导致许多的创建和摧毁开销。</li>
+<li>内存占用：即使从未使用Monostate，它的变量也要占据内存空间。</li>
+<li>平台局限性：Monostate不能跨多个JVM或者多个平台工作。</li>
+</ol></dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-orgeb58d3d\" class=\"outline-4\">
+<h4 id=\"orgeb58d3d\"><span class=\"section-number-4\">4.4.3</span> 对比</h4>
+<div class=\"outline-text-4\" id=\"text-4-4-3\">
+<ol class=\"org-ol\">
+<li>Singleton模式使用私有构造函数和一个静态变量，以及一下静态方法对实例化进行控制和限制；Monostate模式只是简单地把对象的所有变量变成静态的。</li>
+<li>如果希望通过派生去约束一个现存类，并且不介意它的所有调用都都必须要调用instance方法来获取访问权，那么Singleton是最合适的。</li>
+<li>如果希望类的单一性本质对使用者透明，或者希望使用单一对象的多态派生对象，那么Monostate是最合适的。</li>
+</ol>
+</div>
+</div>
+</div>
+<div id=\"outline-container-orgf91f543\" class=\"outline-3\">
+<h3 id=\"orgf91f543\"><span class=\"section-number-3\">4.5</span> Null Object模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-5\">
+<div class=\"org-src-container\">
+<pre class=\"src src-java\"><span style=\"color: #9370db;\">Employee</span> <span style=\"color: #9acd32;\">e</span> = DB.getEmployee(<span style=\"color: #ffa07a;\">\"Bob\"</span>);
+<span style=\"color: #20b2aa; font-weight: bold;\">if</span> (e != <span style=\"color: #1e90ff;\">null</span> &amp;&amp; e.isTimeToPay(today))
+  e.pay();
+</pre>
+</div>
+<dl class=\"org-dl\">
+<dt>场景</dt><dd>考虑如上代码，我们常使用这&amp;&amp;这样的表达式进行空值检查，大多数人也曾由于忘记进行null检查而受挫。该惯用方法虽然常见，</dd>
+</dl>
+<p>
+但却是丑陋且易出错的。通过让getEmployee方法抛出异常，可以减少出错的可能，但try/catch块比null检查更加丑陋。
+这种场景下可以使用Null Object模式来解决这些问题（如下图所示）。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010437590-918961776.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010446283-591183928.jpg\" width=\"400\" title=\"Null Object模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 3: </span>Null Object模式</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org37f3322\" class=\"outline-3\">
+<h3 id=\"org37f3322\"><span class=\"section-number-3\">4.6</span> Facotry模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-6\">
+<dl class=\"org-dl\">
+<dt>问题示例</dt><dd>依赖倒置原则(DIP)告诉我们应该优先依赖于抽象类，而避兔依赖于具体类。当这些具体类不稳定时，更应该如此。
+因此，该代码片段违反了这个原则： <code>Circle c= new Circle(origin， 1)</code> ，Circle是一个具体类。
+所以，创建 Circle类实例的模块肯定违反了DIP。事实上，任何一行使用了new关键字的代码都违反了DIP。</dd>
+<dt>应用场景</dt><dd>Factory模式允许我们只依赖于抽象接口就能创建出具体对象的实例。
+所以，在正在进行的开发期间，如果具体类是高度易变的，那么该模式是非常有用的。</dd>
+</dl>
+</div>
+<div id=\"outline-container-org9be88e1\" class=\"outline-4\">
+<h4 id=\"org9be88e1\"><span class=\"section-number-4\">4.6.1</span> 可替换的工厂</h4>
+<div class=\"outline-text-4\" id=\"text-4-6-1\">
+<p>
+使用工厂的一个主要好处就是可以把工厂的一种实现替换为另一种实现。这样，就可以在应用程序中替换一系列相关的对象。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010501983-1801521657.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010515261-1337594394.jpg\" width=\"500\" title=\"可替换的工厂\" />
+</p>
+<p><span class=\"figure-number\">Figure 4: </span>可替换的工厂</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-orgff6b6f5\" class=\"outline-4\">
+<h4 id=\"orgff6b6f5\"><span class=\"section-number-4\">4.6.2</span> 合理使用工厂模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-6-2\">
+<p>
+严格按照DIP来讲，必须要对系统中所有的易变类使用工厂。此外，Factory模式的威力也是诱人的。这两个因素有时会诱使开发者把工厂作为缺省方式使用。
+我不推荐这种极端的做法。我不是一开始就使用工厂，只是在非常需要它们的情况下，我才把它们放入到系统中。
+例如，如果有必要使用Proxy模式，那么就可能有必要使用工厂去创建持久化对象。或者，在单元测试期间，
+如果遇到了必须要欺骗一个对象的创建者的情况时，那么我很可能会使用工厂。但是我不是开始就假设工厂是必要的。
+</p>
+
+<p>
+使用工厂会带来复杂性，这种复杂性通常是可以避免的，尤其是在一个正在演化的设计的初期。
+如果缺省地使用它们，就会极大地增加扩展设计的难度。为了创建一个新类，就必须要创建出至少4个新类：
+两个表示该新类及其工厂的接口类，两个实现这些接口的具体类。
+</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org1eef8c4\" class=\"outline-3\">
+<h3 id=\"org1eef8c4\"><span class=\"section-number-3\">4.7</span> Composite模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-7\">
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010528463-53082054.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010542466-1215965641.jpg\" width=\"400\" title=\"Composite模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 5: </span>Composite模式</p>
+</div>
+<dl class=\"org-dl\">
+<dt>描述</dt><dd>上图展示了Composite模式的基本结构。基类Shape有两个派生类：Circle和Square，第三个派生类是一个组合体。</dd>
+</dl>
+<p>
+CompositeShape持有一个含有多个Shape实例的列表。当调用CompositeShape的draw()方法时，它就把这个方法委托给列表中的每一个Shape实例。
+因此，一个CompositeShape实例就像是一个单一的Shape，可以把它传递给任何使用Shape的函数或者对象，并且它表现得就像是个Shape。
+不过，实际上它只是一组Shape实例的代理。
+</p>
+</div>
+</div>
+<div id=\"outline-container-org52ffaca\" class=\"outline-3\">
+<h3 id=\"org52ffaca\"><span class=\"section-number-3\">4.8</span> Observer模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-8\">
+<dl class=\"org-dl\">
+<dt>问题描述</dt><dd>有一个计时器，会捕获来自操作系统的时钟中断，生成一个时间戳。现在我们想实现一个数字时钟，将时间戳转换为日期和时间，并展示。
+一种可行的方式是不停轮询获取最新的时间戳，然后计算时间。但时间戳只有在捕获到时钟中断时，都会发生变化，轮询是会造成CPU的极大浪费。</dd>
+<dt>描述</dt><dd>另一种解决方案时在计时器时间发生变化时，告知数字时钟，数字时钟既而更新时间。这里，数字时钟为计时器的观察者(Observer)。</dd>
+<dt>示例</dt><dd><div class=\"figure\">
+<p>	<img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010555802-1165447600.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010610601-1689871226.jpg\" width=\"400\" title=\"Observer模式示例\" />
+</p>
+<p><span class=\"figure-number\">Figure 6: </span>Observer模式示例</p>
+</div>
+
+<p>
+其中MockTimeSink是MockTimeSource的观察者，通过TestClockDriver将MockTimeSink注册到MockTimeSource的观察者队列中。
+当MockTimeSource发生变化时，它会调用notifyObservers()方法遍历各个观察者，并调用其update()方法。
+MockTimeSource实现观察者(Observer)接口，当被通知时，获取当前时间并展示。
+</p></dd>
+<dt>推模型与拉模型</dt><dd>上述示例，观察者在接收到消息后，查询被观察者得到数据，这种模型被称为“拉”模型。相应的如果数据是通过update方法传递，
+则为“推”模型。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-org118d224\" class=\"outline-3\">
+<h3 id=\"org118d224\"><span class=\"section-number-3\">4.9</span> Abstract Server模式、Adapter模式和Bridge模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-9\">
+</div>
+<div id=\"outline-container-orgbde1688\" class=\"outline-4\">
+<h4 id=\"orgbde1688\"><span class=\"section-number-4\">4.9.1</span> Abstract Server模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-9-1\">
+<dl class=\"org-dl\">
+<dt>问题</dt><dd><p>
+考虑实现一个简单的开关控制器，可以控制灯泡的开关，一种简单的设计如下  
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010312131-961947672.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010326033-513233658.jpg\" width=\"400\" title=\"一种简单灯泡实现\" />
+</p>
+<p><span class=\"figure-number\">Figure 7: </span>一种简单灯泡实现</p>
+</div>
+
+<p>
+这个设计违反了两个设计原则：依赖倒置原则(DIP)和开放封闭原则(OCP)。对DIP的违反是明显的，Switch依赖了具体类Light。
+DIP告诉我们要优先依赖于抽象类。对OCP的违反虽然不那么明显，但是更加切中要害：在任何需要Switch的地方都要附带上Light，
+不能容易地扩展Switch去管理除Light外的其他对象，如当需要控制音乐的开关时（比如在回家后，打开门，同时打开灯光和音乐的开关）。
+</p></dd>
+<dt>描述</dt><dd><p>
+为了解决这个问题，可以使用一个最简单的设计模式：Abstract Server模式。在Switch和Light之间引入一个接口，
+这样就使得Switch能够控制任何实现了这个接口的东西，这立即就满足了DIP和OCP
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010621845-166927718.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010633963-565970885.jpg\" width=\"400\" title=\"AbstractServer模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 8: </span>AbstractServer模式</p>
+</div></dd>
+<dt>谁拥有接口</dt><dd>接口属于它的客户，而不是它的派生类。
+客户和接口之间的逻辑绑定关系要强于接口和它的派生类之间的逻辑绑定关系。
+它们之间的关系强到在没有Switchable有的情况下就无法使用Switch；但是，在没有Light的情况下却完全可以使用Switch。
+逻辑关系的强度和实体(physical)关系的强度是不一致的。继承是一个比关联强得多的实体关系。</dd>
+<dt>如何打包</dt><dd>在20世纪90年代初期，我们通常认为实体关系支配着一切，有使多人都建议把继求层次构一起放到同一个实体包中。
+这似乎是合理的，因为继承是一种非常强的实体关系。但是在最近10年中，我们已经认识到继承的实体强度是一个误导，
+并且继承层次结构通常也不应该被打包在起。相反，往往是把客户和它们控制的接口打包在一起。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-org37fdfc8\" class=\"outline-4\">
+<h4 id=\"org37fdfc8\"><span class=\"section-number-4\">4.9.2</span> Adapter模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-9-2\">
+<dl class=\"org-dl\">
+<dt>问题</dt><dd>上述Adapter设计可能会违反单一职责原则(SRP)：我们把Lght和Switchable定在一起，而它们可能会因为不同的原因改变。
+另外，如果无法把继承关系加到Light上该怎么办呢，比如从第三方购买了Light而没有源代码。这个时候可以使用Adapter模式。</dd>
+<dt>描述</dt><dd><p>
+定义一个适配器，使其继承Switchable接口，并将所有接口的实现委托给实际的Light执行。
+事实上，Light对象中甚至不需要有turnOn和turnOff方法。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010647798-1981470922.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010658179-2087863226.jpg\" width=\"400\" title=\"Adapter模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 9: </span>Adapter模式</p>
+</div></dd>
+</dl>
+</div>
+<ol class=\"org-ol\">
+<li><a id=\"orgb9b8c22\"></a>使用Adapter模式隐藏杂凑体<br />
+<div class=\"outline-text-5\" id=\"text-4-9-2-1\">
+<dl class=\"org-dl\">
+<dt>原设计</dt><dd><p>
+请考虑一下下图中的情形：有大量的调制解调器客户程序，它们都使用Modem接口。
+Modem接口被几个派生类HayesModem、UsRoboticsModem和ErniesModem实现。这是常见的方案，它很好地遵循了OCP、LSP和DIP。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010707924-334544140.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010720491-1784007674.jpg\" width=\"400\" title=\"调制解调器问题\" />
+</p>
+<p><span class=\"figure-number\">Figure 10: </span>调制解调器问题</p>
+</div></dd>
+<dt>搅乱设计的需求变动</dt><dd>现在假定客户提出了一个新的需求：有某些种类的调制解调器是不拨号的，它们被称为专用调制解调器，
+因为它们位于一条专用连接的两端。有几个新应用程序使用这些专用调制解调器，它们无需拨号，我们称这些使用者为DedUser。
+但是，客户希望当前所有的调制解调器客户程序都可以使用这些专用调制解调器，他们不希望去更改许许多多的调制解调器客户应用程序，
+所以完全可以上这些调制解调器客户程序去拨一些假(dummy)电话号码。</dd>
+<dt>无法使用的理想解决方案</dt><dd><p>
+如果能选择的话，我们会把系统的设计更改为下图所示的那样。我们会使用ISP把拨号和通信功能分离为两个不同的接口。
+原来的调制解调器实现这两个接口，而调制解调器客户程序使用这两个接口。DedUser只使用Modem接口，
+而DedicateModem只实现Modem接口。糟糕的是，这样做会要求我们更改所有的调制解调器客户程序，这是客户不允许的。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010736302-153499411.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010752839-1706370214.jpg\" width=\"400\" title=\"理想解决方案\" />
+</p>
+<p><span class=\"figure-number\">Figure 11: </span>理想解决方案</p>
+</div></dd>
+<dt>一种简单的解决方案</dt><dd>一个可能的解决方案是让DedicatedModem从Modem派生并且把dial方法和hangup方法实现为空</dd>
+<dt>存在的问题</dt><dd>两个退化函数预示着我们可能违反了LSP；另外，基类的使用者可能期望dial和hangup会明显地改变调制解调器的状态。
+DedicatedModem中的退化实现可能会违背这些期望：假定调制解调器客户程序期望在调用dial方法前调制解调器处于体眠状态，
+并且当调用hangup时返回休眠状态。换句话说，它们期望不会从没有拨号的调制解调器中收到任何字符。
+DedicatedModem违背了这个期望。在调用dial之前，它就会返回字符，并且在调用hangup调用之后，仍会不断地返回字符。
+所以，DedicatedModem可能会破坏某些调制解调器的使用者。</dd>
+<dt>杂凑体的出现</dt><dd><p>
+我们可以在DedicatedModem的dial方法和hangup方法中模拟一个连接状态。
+如果还没有调用dial，或者已经调用了hangup，就可以拒绝返回字符。
+如果这样做的话，那么所有的调制解调器客户程序都可以正常工作并且也不必更改。只要让DedUser去调用dial和hangup即可。
+你可能认为这种做法会令那些正在实现DedUser的人觉得非常沮丧，他们明明在使用DedicatedModem。
+为什么他们还要去调用dial和hangup呢?不过，他们的软件还没有开始编写，所以还比较容易让他们按照我们的想法去做。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010815639-203460235.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010825901-1986992192.jpg\" width=\"500\" title=\"使用杂凑体解决问题\" />
+</p>
+<p><span class=\"figure-number\">Figure 12: </span>使用杂凑体解决问题</p>
+</div></dd>
+<dt>丑陋的杂凑体</dt><dd>几个月后，已经有了大量的DedUser，此时客户提出了一个新的更改。客户希望能够拨打任意长度的电话号码，
+他们需要去拨打国际电话、信用卡电话、PIN标识电话等等，而原有的电话号码使用char[10]存储电话号码。
+显然，所有的调制解调器客户程序都必须更改，客户同意了对调制解调器客户程序的更改。
+糟糕的是，现在我们必须要去告诉DedUser的编写者，他们必须要更改他们的代码！
+你可以想象他们听到这个会有多气愤，他们之所以调用了dial是因为我们告诉他们必须要这样做，而他们根本不需要dial和hangup方法。</dd>
+<dt>使用适配器模式隐藏杂凑体</dt><dd><p>
+DedicatedModem不从Modem继承，调制解调器客户程序通过DedicatedModemAdapter间接地使用DedicatedModem。
+在这个适配器的dial和hangup的实现中去模拟连接状态，同时把send和receive调用委托给DedicatedModem。
+请注意，杂凑体仍然存在，适配器仍然要模拟连接状态。然而，请注意，所有的依赖关系都是从适配器发起的。
+杂凑体和系统隔离，藏身于几乎无人知晓的适配器中，只有在某处的某个工厂才可能会实际依赖于这个适配器。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010836857-1861768942.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010846725-925132476.jpg\" width=\"500\" title=\"使用Adapter模式解决问题\" />
+</p>
+<p><span class=\"figure-number\">Figure 13: </span>使用Adapter模式解决问题</p>
+</div></dd>
+</dl>
+</div>
+</li>
+</ol>
+</div>
+<div id=\"outline-container-orga418b66\" class=\"outline-4\">
+<h4 id=\"orga418b66\"><span class=\"section-number-4\">4.9.3</span> Bridge模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-9-3\">
+<dl class=\"org-dl\">
+<dt>解决调制解调器问题的另一种思路</dt><dd><p>
+看待调制解调器问题，还有另外一个方式，对于专用调制解调器的，
+需要向Modem类型层次结构中增加了一个新的自由度，我们可以让DialModem和DedicatedModem从Modem派生。
+如下图所示，每一个叶子节点要么向它所控制的硬件提供拨号行为，要么提供专用行为。
+DedicatedHayesModem对象以专用的方式控制着Hayes品牌的调制解调器，而HayesDialModem则以拨号的方式控制着Hayes品牌的调制解调器。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010855956-2036289091.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010904916-482797967.jpg\" width=\"500\" title=\"扩展层次结构解决问题\" />
+</p>
+<p><span class=\"figure-number\">Figure 14: </span>扩展层次结构解决问题</p>
+</div></dd>
+<dt>存在的问题</dt><dd>这不是一个理想的结构，每当增加一款新硬件时，就必须创建两个新类个针对专用的情况，一个针对拨号的情况。
+而每当增加一种新连接类型时，就必须创建三个新类，分别对应三款不同的硬件。
+如果这两个自由度根本就是不稳定的，那么不用多久，就会出现大量的派生类。</dd>
+<dt>Bridge模式的使用</dt><dd><p>
+在类型层次结构具有多个自由度的情况中，Bridge模式通常是有用的，我们可以把这些层次结构分开并通过桥把它们结合到一起，
+而不是把它们合并起来。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010916627-1551517688.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010927408-1942548907.jpg\" width=\"600\" title=\"使用Bridge模式解决问题\" />
+</p>
+<p><span class=\"figure-number\">Figure 15: </span>使用Bridge模式解决问题</p>
+</div></dd>
+<dt>Bridge模式的优势</dt><dd>这个结构虽然复杂，但是很有趣，改造为该模式时，不会影响到调制解调器的使用者，并且还完全分离了连接策略和硬件实现。
+ModemConnectController的每个派生类代表了一个新的连接策略。
+在这个策略的实现中可以使用sending、receiveImp、dialImp和hangup，新imp方法的增加不会影响到使用者。
+可以使用ISP来给连接控制类增加新的接口。这种做法可以创建出一条迁移路径，
+调制解调器的客户程序可以沿着这条路径慢慢地得到一个比dial和hangup层次更高的API。</dd>
+</dl>
+</div>
+</div>
+</div>
+<div id=\"outline-container-orgd577e47\" class=\"outline-3\">
+<h3 id=\"orgd577e47\"><span class=\"section-number-3\">4.10</span> Proxy模式和Stairway To Heaven模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-10\">
+</div>
+<div id=\"outline-container-orgb8e7089\" class=\"outline-4\">
+<h4 id=\"orgb8e7089\"><span class=\"section-number-4\">4.10.1</span> Proxy模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-10-1\">
+<dl class=\"org-dl\">
+<dt>问题</dt><dd>假设我们编写一个购物车系统，这样的系统中会有一些关于客户、订单(购物车) 及订单上的商品的对象。
+如果向订单中增加新商品条目，并假设这些对象所代表的数据保存在一个关系数据库中的，
+那么我们在添加商品的代码中就不可避免的使用JDBC去操作关系数据模型──客户、订单、商品属于不同的表，
+添加商品到客户在关系数据库中的体现，就是在建立外键联系。这严重违反了SRP，并且还可能违反CCP。
+这样把商品条目和订单的概念与关系模式(schema)和SQL的概念混合在了一起。无论任何原因造成其中的一个概念需要更改，
+另一个概念就会受到影响。</dd>
+<dt>Proxy模式</dt><dd><p>
+请考虑一下Product类，我们通过用一个接口来代替它实现了对它的代理，这个接口具有Product类的所有方法。
+ProductImplementation类是一个简单的数据对象，同时ProductDbProxy实现了Product中的所有方法，
+这些方法从数据库中取出产品，创建一个ProductImplementation实例，然后再把逻辑操作委托给这个实例。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010337049-228743020.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010349246-1707506398.jpg\" width=\"400\" title=\"Proxy模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 16: </span>Proxy模式</p>
+</div></dd>
+<dt>优点</dt><dd>Product的使用者和ProductImplementation都不知道所发生的事情，数据库操作在这两者都不知道的情况下被插入到应用程序中。
+这正是 PROXY模式的优点。理论上,它可以在两个协作的对象都不知道的情况下被插入到它们之间。
+因此,使用它可以跨越像数据库或者网络这样的障碍,而不会影响到任何一个参与者。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-org7bc9565\" class=\"outline-4\">
+<h4 id=\"org7bc9565\"><span class=\"section-number-4\">4.10.2</span> Stairway To Heaven模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-10-2\">
+<dl class=\"org-dl\">
+<dt>Stairway To Heaven模式</dt><dd><p>
+Stairway To Heaven模式是另一个可以完成和Proxy模式一样的依赖关系倒置的模式。
+我们引入一个知道数据库的抽象类PersistentObject，它提供了read和write两个抽象方法，
+同时提供了一组实现方法作为实现read和write所需要的工具。在PersistentProduct的read和write的实现中，
+会使用这些工具把Product的所有数据字段从数据库中读出或者写入到数据库。
+现使PersistentProduct同时继承Product的PersistentObject类，如下图所示。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010938451-572597792.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904010947753-1171420794.jpg\" width=\"300\" title=\"StairwayToHaven模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 17: </span>StairwayToHaven模式</p>
+</div></dd>
+<dt>优势</dt><dd>Product的使用者并不需要知道PersistentObject，在需要数据库操作的少量代码中，则可以将类型向下转换（如dynamic<sub>cast</sub>），
+将Product类转换成实际的PersistentObject类，调用其write和read方法。
+这样，就可以将有关数据库的知识和应用程序的业务规则完全分离开来。</dd>
+</dl>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org36730f8\" class=\"outline-3\">
+<h3 id=\"org36730f8\"><span class=\"section-number-3\">4.11</span> Visitor设计模式系列</h3>
+<div class=\"outline-text-3\" id=\"text-4-11\">
+<dl class=\"org-dl\">
+<dt>问题</dt><dd>在Modem对象的层次结构，基类中具有对于所有调制解调器来说公共的通用方法，派生类代表着针对许多不同调制解调器厂商和类型的驱动程序。
+假设你有一个需求，要增加一个configureForUnix方法，调制解调器进行配置，使之可以工作于UNX操作系统中。
+因为每个不同厂商的调制解调器在UNIX中都有自己独特的配置方法和行为特征，这样在每个调制解调器派生类中，该函数的实现都不相同，
+这样我们将面临一种糟糕的场景，增加configureForUnix方法其实反映了一组问题：对于Windows该怎么办？对于MacOs该怎么办呢？
+对于Linux又该怎么办呢？我们难产要针对每一种新操作系统向Modem层次结构中增加一个新方法吗？
+这种做法是丑陋的，我们将永远无法封闭Modem接口，每当出现一种新操作系统时，我们就必须更改该接口并重新部署所有的调制解调器软件。</dd>
+<dt>Visitor模式系列</dt><dd>Visitor模式系列允许在不更改现有类层次的情况下向其中增加新方法。该系列中的模式包括：Visitor模式、
+Acyclic Visitor模式、Decorator模式、Extension Object模式。</dd>
+</dl>
+</div>
+<div id=\"outline-container-org5e86ea4\" class=\"outline-4\">
+<h4 id=\"org5e86ea4\"><span class=\"section-number-4\">4.11.1</span> Visitor模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-11-1\">
+<p>
+Visitor模式使用了双重分发技术。之所以被称为双重分发是因为它涉及了两个多态分发，第一个分发是accept函数，
+该分发辨别出所调用的accept方法所属对象的类型，第二个分发是viist方法，它辨别出要执行的特定函数。（如下图所示）
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011000963-729852310.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011016334-950097281.jpg\" width=\"500\" title=\"Visitor模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 18: </span>Visitor模式</p>
+</div>
+
+<p>
+Visitor模式中的两次分发形成了个功能矩阵，在调制解调器的例子中，矩阵的一条轴是不同类型的调制解调器，
+另一条轴是不同类型的操作系统。该矩阵的每个单元都被一项功能填充，该功能很好的解决把特定的调制解调器初始化为可以在特定的操作系统中使用的问题。
+</p>
+</div>
+</div>
+<div id=\"outline-container-org0115563\" class=\"outline-4\">
+<h4 id=\"org0115563\"><span class=\"section-number-4\">4.11.2</span> Acyclic Visitor模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-11-2\">
+<dl class=\"org-dl\">
+<dt>问题</dt><dd>在Visitor模式中，被访问层次结构的基类(Modem)依赖于访问者层次结构的基类(Modem Visitor)。
+同时，访问者层次结构的基类中对于被访问层次结构中的每个派生类都有一个对应函数。
+这样， 就有形成了一个依赖环，把所有被访问的派生类(所有的调制解调器)绑定在一起，导致很难实现对访问者结构的增量编译，
+并且也很难向被访问层次结构中增加新的派生类。</dd>
+<dt>Acyclic Visitor模式</dt><dd><p>
+该变体把Visitor基类(modemVisitor)变成退化的，从而解除了依赖环，这个类中不存在任何方法，
+使它不再依赖于被访问层次结构的派生类（如下图所示）。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011026774-509962039.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011038855-58300359.jpg\" width=\"500\" title=\"AcyclicVisitor模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 19: </span>AcyclicVisitor模式</p>
+</div>
+
+<p>
+对于被访问层次结构的每个派生类，都有个对应的访问者接口，且访问者派生类派生自这些访问者接口。
+这是一个从派生类到接口的180度旋转，被访问派生类中的accept函数把Visitor基类转型(cast)为适当的访问者接口。如果转型成功，
+该方法就调用相应的visit函数。
+</p></dd>
+<dt>优点</dt><dd>这种做法解除了环赖环，并且更易于增加被访问的派生类以及进行增量编译。</dd>
+<dt>缺点</dt><dd>糟糕的是，它同样也使得解决方案更加复杂了。更糟糕的是，转型花费的时间依赖于被访问层次结构的宽度和深度，所以很难进行测定。
+由于转型需要花费大量的执行时间，并且这些时间是不可预测的，所以Acycllic Visitor模式不适用于严格的实时系统。
+该模式的复杂性可能同样会使它不适用于其他的系统，但是对于那些被访问的层次结构不稳定，并且增量编译比较重要的系统来说，
+该模式是一个不错的选择。</dd>
+<dt>动态转型带来的稀疏特性</dt><dd>正像Visitor模式创建了一个功能矩阵(一个轴是被访问的类型，另一个轴是要执行的功能)一样，
+Acyclic Visitor模式创建了一个稀疏矩阵。访问者类不需要针对每一个被访问的派生类都实现visit函数。
+例如，如果Ernie调制解调器不可以配置在UNIX中，那么UnixModemConfigurator就不会实现EnineVisitor接口。
+因此，Acyclic Visitor模式允许我们忽略某些派生类和功能的组合。有时，这可能是一个有用的优点。</dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-orgb7aa723\" class=\"outline-4\">
+<h4 id=\"orgb7aa723\"><span class=\"section-number-4\">4.11.3</span> Decorator模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-11-3\">
+<dl class=\"org-dl\">
+<dt>问题</dt><dd>假设我们有ー个具有很多使用者的应用程序，每个使用者都可以坐在他的计算机前，要求系统使用该计算机的调制解调器呼叫另一台计算机。
+有些用户希望听到拨号声，有些用户则希望他们的调制解调器保持安静。一种简单的解决方案是在所有的Modem派生类中加入逻辑，
+在拨号前询问使用者是否静音；另一种解决方案，是将Modem接口变为一个类，将通用的逻辑放在基类中，而派生类只实现拨号动作。
+前一种方案，需要在每一个派生类中加入重复的代码，并需要新派生类的开发者必须要记着复制这段代码。而后一种方案虽然更好，
+但是否大声拨号与调制解调器的内在功能没有任何关系，这违反了单一职责原则。</dd>
+<dt>Decorator模式</dt><dd><p>
+Decorator模式通过创建一个名为LoudDialModem的全新类来解决这个问题。 LoudDialModem派生自Modem，
+并且携有的一个Modem实例，它捕获对dial函数的调用并在委托前拨号动作前把音量设高。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011046534-257528660.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011054520-1177172395.jpg\" width=\"400\" title=\"Decorator模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 20: </span>Decorator模式</p>
+</div></dd>
+</dl>
+</div>
+</div>
+<div id=\"outline-container-org8420d17\" class=\"outline-4\">
+<h4 id=\"org8420d17\"><span class=\"section-number-4\">4.11.4</span> Extension Object模式</h4>
+<div class=\"outline-text-4\" id=\"text-4-11-4\">
+<p>
+还有另外一种方法可以在不更改类层次结构的情况下向其中增加功能，那就是使用Extension Object模式。
+这个模式虽然比其他的模式复杂一些，但是它也更强大、更灵活一些。
+</p>
+<dl class=\"org-dl\">
+<dt>Extension Object模式</dt><dd><p>
+层次结构中的每个对象都持有一个特定扩展对象(Extension Object)的列表。
+同时，每个对象也提供一个通过名字查找扩展对象的方法，扩展对象提供了操作原始层次结构对象的方法。
+举个例子，假设有一个材料单系统，我们想让其中的每个对象都有将自己数据导出为XML和CVS的能力，
+这个需求和调制解调器对不同操作系统支持的需求类似，此时，除了Acyclic Visitor模式外，
+我们也可以使用Extension Object模式（如下图所示）：Part接口定义了添加扩展对象和获取扩展对象的方法，
+同时，针对Assembly和PiecePart都实现了相应的XML和CVS导出能力的类，剩下只需要通过类构造方法或使用工厂模式，
+将扩展对象装配到相应的数据对象中即可。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011102867-1635376044.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011110975-1289268879.jpg\" width=\"600\" title=\"ExtensionObject模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 21: </span>ExtensionObject模式</p>
+</div></dd>
+</dl>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org7a07167\" class=\"outline-3\">
+<h3 id=\"org7a07167\"><span class=\"section-number-3\">4.12</span> State模式</h3>
+<div class=\"outline-text-3\" id=\"text-4-12\">
+<dl class=\"org-dl\">
+<dt>使用场景</dt><dd>有限状态机(FSM)是软件宝库中最有用的抽象之一，
+它们提供了一个简单、优雅的方法去揭示和定义复杂系统的行为。
+它们同样也提供了一个易于理解、易于修改的有效实现策略。在系统的各个层面，
+从控制髙层逻辑的GUP到最低层的通讯协议，都会使用它们。它们几乎适用于任何地方。
+实现有限状态机的常用方法包括switch-case语句、使用转移表进行驱动以及State模式。</dd>
+<dt>示例场景</dt><dd>现假设去实现一个十字门的状态机，当门“锁住”时，“投币”后可将十字门“解锁”；
+在门“锁住”的状态下，如果有人尝试“通过”，十字门将“发出警报”；
+在门“解锁”的状态下，人“通过”十字门后，门自动“锁住”；
+在门“解锁”的状态下，如果继续“投币”，十字门将“播报感谢语音”。</dd>
+<dt>State模式</dt><dd><p>
+如下图所示，Turnstyle类拥有关于事件的公有方法以及关于动作的受保护方法，
+它持有一个指向TurnstyleState接口的引用，而TurnstyleState的两个派生类代表FSM的两个状态。
+当Turnstyle的两个事件方法中的一个被调用时，它就把这个事件委托给TurnstyleState对象。
+其中TurnstyleLockedState实现了LOCKED状态下的相应动作，
+TurnstyleUnlockedState的方法实现了UNLOCKED状态下的相应动作。
+为了改变FSM的状态，就要把这两个派生类之一的实例赋给Turnstyle对象中的引用。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011119195-587156267.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011130690-2043061699.jpg\" width=\"400\" title=\"State模式\" />
+</p>
+<p><span class=\"figure-number\">Figure 22: </span>State模式</p>
+</div></dd>
+<dt>State模式与Strategy模式对比</dt><dd><p>
+这两个模式都有一个上下文类，都委托给一个具有几个派生类的多态基类。
+不同之处在于，在State模式中，派生类持有回指向上下文类的引用，所有状态设置方法都在上下文类中实现，
+派生类的主要功能是使用这个引用选择并调用上下文类中的方法进行状态转移。
+而在Strategy模式中，不存在这样的限制以及意图，Strategy的派生类不必持有指向上下文类的引用，
+并且也不需要去调用上下文类的方法。所以，所有的State模式实例同样也是Strategy模式实例，
+但是并非所有的Strtegy模式实例都是State模式实例。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011139514-718439691.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011147712-83805541.jpg\" width=\"500\" title=\"State模式与Strategy模式对比\" />
+</p>
+<p><span class=\"figure-number\">Figure 23: </span>State模式与Strategy模式对比</p>
+</div></dd>
+<dt>优势</dt><dd>State模式彻底地分离了状态机的逻辑和动作，动作是在Context类中实现的，
+而逻辑则是分布在State类的派生类中，这就使得二者可以非常容易地独立变化、互不影响。
+例如，只要使用State类的另外一个派生类，
+就可以非常容易地在一个不同的状态逻辑中重用Context类的动作。
+此外，我们也可以在不影响State派生类逻辑的情况下创建Context子类来更改或者替换动作实现。
+该方法的另外一个好处就是它非常高效，它基本上和嵌套switch/case实现的效率完全一样。
+因此，该方法既具有表驱动方法的灵活性，又具有嵌套switch/case方法的效率。</dd>
+<dt>缺点</dt><dd>这项技术的代价体现在两个方面。第一，State派生类的编写完全是一项乏味的工作，
+编写一个具有20个状态的状态机会使人精神麻木。第二，逻辑分散，
+无法在一个地方就看到整个状态机逻辑，因此，就使得代码难以维护。
+这会使人想起嵌套switch/case方法的晦涩性。</dd>
+</dl>
+</div>
+</div>
+</div>
+
+<div id=\"outline-container-orgcc12bac\" class=\"outline-2\">
+<h2 id=\"orgcc12bac\"><span class=\"section-number-2\">5</span> 包的设计原则</h2>
+<div class=\"outline-text-2\" id=\"text-5\">
+</div>
+<div id=\"outline-container-orgd4dc73e\" class=\"outline-3\">
+<h3 id=\"orgd4dc73e\"><span class=\"section-number-3\">5.1</span> 粒度：包的内聚性原则</h3>
+<div class=\"outline-text-3\" id=\"text-5-1\">
+</div>
+<div id=\"outline-container-orgb3de4fc\" class=\"outline-4\">
+<h4 id=\"orgb3de4fc\"><span class=\"section-number-4\">5.1.1</span> 重用发布等价原则（Release Reuse Equivalency Principle）</h4>
+<div class=\"outline-text-4\" id=\"text-5-1-1\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>重用的粒度就是发布的粒度</dd>
+</dl>
+
+<p>
+RFP指出，一个包的重用粒度可以和发布粒度一样大，我们所重用的任何东西都必须同时被发布和跟踪。
+简单的编写一个类，然后声称它是可重用的做法是不现实的。只有在建立一个跟踪系统，为潜在的使用者提供所需要的变更通知、安全性以及支持后，
+重用才有可能。
+</p>
+</div>
+</div>
+<div id=\"outline-container-orgb753d43\" class=\"outline-4\">
+<h4 id=\"orgb753d43\"><span class=\"section-number-4\">5.1.2</span> 共同重用原则（Common Reuse Principle）</h4>
+<div class=\"outline-text-4\" id=\"text-5-1-2\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>一个包中的所有类应该是共同重用的。如果重用了包中的一个类，那么就要重用包中的所有类。</dd>
+</dl>
+
+<p>
+类很少会孤立的重用，一般来说，可重用的类需要与作为该可重用抽象一部分的其他类协作。
+</p>
+
+<p>
+CRP规定了这些类应该属于同一个包。在这样的一个包中，我们会看到类之间有很多的互相依赖。一个简单的例子是容器类以及与它关联的迭代器类，
+这些类彼此之间紧密耦合在一起，因此必须共同重用，所以它们应该在同一个包中。
+</p>
+
+<p>
+因此，我想确信当我依赖于一个包时，我将依赖于那个包中的每一个类。换句话说，我想确信我放入一个包中的所有类是不可分开的，
+仅仅依赖于其中一部分的情况是不可能的。否则，我将要进行不必要的重新验证和重新发行，并且会白费相当数量的努力。
+</p>
+</div>
+</div>
+<div id=\"outline-container-org5618b80\" class=\"outline-4\">
+<h4 id=\"org5618b80\"><span class=\"section-number-4\">5.1.3</span> 共同封闭原则（Common Closure Principle）</h4>
+<div class=\"outline-text-4\" id=\"text-5-1-3\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>包中的所有类对于同一类性质的变化应该是共同封闭的。一个变化若对一个包产生影响，则将对该包中的所有类产生影响，</dd>
+</dl>
+<p>
+而对于其他的包不造成任何影响。
+</p>
+
+<p>
+这是单一职责原则对于包的重新规定。正如SRP规定的一个类不应该包含多个引起变化的原因那样，这条原则规定了一个包不应该包含多个引起变化的原因。
+</p>
+
+<p>
+CCP鼓励我们把可能由于同样的原因而更改的所有类共同聚集在同一个地方。如果两个类之间有非常紧密的绑定关系，不管是物理上的还是概念上的，
+那么它们总是会一同进行变化，因而它们应该属于同一个包中。这样做会减少软件的发布、重新验证、重新发行的工作量。
+CCP通过把对于一些确定的变化类型开放的类共同组织到同一个包中，从而增强了上述内容。因而，当需求中的一个变化到来时，
+那个变化就会很有可能被限制在最小数量的包中。
+</p>
+</div>
+</div>
+<div id=\"outline-container-org17a238f\" class=\"outline-4\">
+<h4 id=\"org17a238f\"><span class=\"section-number-4\">5.1.4</span> 总结</h4>
+<div class=\"outline-text-4\" id=\"text-5-1-4\">
+<p>
+过去，我们对内聚性的认识要远比上面3个原则所蕴含的简单，我们习惯于认为内聚性不过是指一个模块执行一项并且仅仅一项功能。
+然而，这3个关于包内聚性的原则描述了有关内聚性的更加丰富的变化。在选择要共同组织到包中的类时，必须要考虑可重用性与可开发性之间的相反作用力。
+在这些作用力和应用的需要之间进行平衡不是一件简单的工作。此外，这个平衡几乎总是动态的。
+也就是说，今天看起来合适的划分到了明年也许就不再合适了。
+因此，当项目的重心从可开发性向可重用性转变时，包的组成很可能会变动并随时问而演化。
+</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org0c2119c\" class=\"outline-3\">
+<h3 id=\"org0c2119c\"><span class=\"section-number-3\">5.2</span> 稳定性：包的耦合性原则</h3>
+<div class=\"outline-text-3\" id=\"text-5-2\">
+</div>
+<div id=\"outline-container-org6bc5727\" class=\"outline-4\">
+<h4 id=\"org6bc5727\"><span class=\"section-number-4\">5.2.1</span> 无环依赖原则</h4>
+<div class=\"outline-text-4\" id=\"text-5-2-1\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>在包的依赖关系图中不允许存在环</dd>
+</dl>
+
+<p>
+如果开发环境中存在有许多开发人员都在更改相同的源代码文件集合的情况，那么就会出现因为他人的更改导致你无法构建的情况。
+当项目和开发团队的规模增长时，这种问题就会带来可怕的噩梦，每个人都忙于一遍遍地更改他们的代码，试图使之能够相容于其他人所做的最近更改。
+</p>
+
+<p>
+通过将开发环境划分成可发布的包，可以解决这个问题，这些包可以作为工作单元被一个开发人员或者一个开发团队修改，将一个包可以工作时，
+就把它发布给其他开发人员使用。因此，所有的开发团队都不会受到其他开发团队的支配，对一个包作的理性不必立即反应至其他开发团队中，
+每个开发团队独立决定何时采用上前所使用的包的新版本。此外，集成是以小规模增量的方式进行。
+</p>
+
+<p>
+这是一个非常简单、合理的过程，并被广泛使用。不过，要使其能够工作，就必须要对包的依赖关系结构进行管理，包的依赖关系结构中不能有环。
+</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org056bcea\" class=\"outline-3\">
+<h3 id=\"org056bcea\"><span class=\"section-number-3\">5.3</span> 启发：不能自顶向下设计包的结构</h3>
+<div class=\"outline-text-3\" id=\"text-5-3\">
+<p>
+这意味着包结构不是设计系统时首先考虑的事情之一。事实上，包结构应该是随着系统增长、变化而逐步演化的。
+</p>
+
+<p>
+事实上，包的依赖关系图和描绘应用程序的功能之间几乎没有关系，相反，它们是应用程序可构建性的映射图。
+这就是为何不在项目开始时设计它们的原因。在项目开始时，没有软件可构建， 因此也无需构建映射图。
+但是，随着实现和设计初期累积的类越来越多，对依赖关系进行管理，避免项目开发中出现晨后综合症的需要就不断增长。
+此外，我们也想尽可能地保持更改的局部化，所以我们开始关注SRP和CCP，并把可能会一同变化的类放在一起
+</p>
+
+<p>
+如果在设计任何类之前试图去设计包的依赖关系结构，那么很可能会遭受惨败。我们对于共同封闭还没有多少了解，也还没有觉察到任何可重用的元素，
+从而几乎当然会创建产生依赖环的包。所以，包的依赖关系结构是和系统的逻辑设计一起增长和演化的。
+</p>
+</div>
+</div>
+<div id=\"outline-container-org375cc2c\" class=\"outline-3\">
+<h3 id=\"org375cc2c\"><span class=\"section-number-3\">5.4</span> 稳定依赖原则（Stable Dependencies Principle）</h3>
+<div class=\"outline-text-3\" id=\"text-5-4\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>朝着稳定的方向进行依赖</dd>
+</dl>
+
+<p>
+对于任何包而言，如果期望它是可变的，就不应该让一个难以更改的包依赖于它！否则，可变的包同样也会难以更改。
+</p>
+</div>
+<div id=\"outline-container-org8775e17\" class=\"outline-4\">
+<h4 id=\"org8775e17\"><span class=\"section-number-4\">5.4.1</span> 稳定性</h4>
+<div class=\"outline-text-4\" id=\"text-5-4-1\">
+<p>
+韦伯斯特认为，如果某物“不容易被移动”，就认为它是稳定的。稳定性和更改所需要的工作量有关。
+硬币不是稳定的，因为推倒它所需的工作量是非常少的。但是，桌子是非常稳定的，因为推倒它要花费相当大的努力。
+</p>
+</div>
+</div>
+<div id=\"outline-container-org1757a8d\" class=\"outline-4\">
+<h4 id=\"org1757a8d\"><span class=\"section-number-4\">5.4.2</span> 稳定性度量</h4>
+<div class=\"outline-text-4\" id=\"text-5-4-2\">
+<ul class=\"org-ul\">
+<li>(C<sub>a</sub>)输入耦合度(Afferent Coupling)：指处于该包的外部并依赖于该包内的类的类的数目</li>
+<li>(C<sub>e</sub>)输出耦合度(Efferent Coupling)：指处于该包的内部并依赖于该包外的类的类的数目</li>
+<li>不稳定性I： \\(I = C_e / (C_a + C_e)\\)</li>
+</ul>
+
+<p>
+SDP规定一个包的I度量值应该大于它所依赖的包的I度量值，也就是说，度量值应该顺着依赖的方向减少。
+</p>
+
+<p>
+如果一个系统中所有的包都是最大程度稳定的，那么该系统就是不能改变的。这不是所希望的情形。
+事实上，我们希望所设计出来的包结构中，一些包是不稳定的而另外一些是稳定的。
+其中可改变的包位于顶部并依赖于底部稳定的包，把不稳定的包放在图的顶部是一个有用的约定， 因为任何向上的箭头都意味着违反了SDP。
+</p>
+</div>
+</div>
+</div>
+<div id=\"outline-container-orgd7693f3\" class=\"outline-3\">
+<h3 id=\"orgd7693f3\"><span class=\"section-number-3\">5.5</span> 稳定抽象原则（Stable Abstractions Principle）</h3>
+<div class=\"outline-text-3\" id=\"text-5-5\">
+<dl class=\"org-dl\">
+<dt>定义</dt><dd>包的抽象程度应该和其稳定程度一致</dd>
+</dl>
+
+<p>
+该原则把包的稳定性和抽象性联系起来。它规定，一个稳定的包应该也是抽象的，这样它的稳定性就不会使其无法扩展。
+另一方面，它规定，一个不稳定的包应该是具体的，因为它的不稳定性使得其内部的具体代码易于更改。
+</p>
+
+<p>
+SAP和SDP结合在一起形成了针对包的DIP原则。这样说是准确的，因为SDP规定依赖应该朝着稳定的方向进行，而SAP则规定稳定性意味着抽象性。
+因此，依赖应该朝着抽象的方向进行。然而，DIP是一个处理类的原则。类没有灰度的概念(the shades of grey)。
+一个类要么是抽象的，要么不是。SDP和SAP的结合是处理包的，并且允许一个包是部分抽象、部分稳定的。
+</p>
+</div>
+<div id=\"outline-container-org066d474\" class=\"outline-4\">
+<h4 id=\"org066d474\"><span class=\"section-number-4\">5.5.1</span> 抽象性度量</h4>
+<div class=\"outline-text-4\" id=\"text-5-5-1\">
+<ul class=\"org-ul\">
+<li>N<sub>c</sub>：包中类的总数N</li>
+<li>N<sub>a</sub>：包中抽象类的数目。请记住，一个抽象类是一个至少具有一个纯接口(pure interface)的类，并且它不能被实例化。</li>
+<li>A是一个测量包抽象程度的度量标准。它的值就是包中抽象类的数目和全部类的数目的比值： \\(A = N_a / N_c\\)</li>
+</ul>
+</div>
+</div>
+</div>
+<div id=\"outline-container-org4459420\" class=\"outline-3\">
+<h3 id=\"org4459420\"><span class=\"section-number-3\">5.6</span> 主序列</h3>
+<div class=\"outline-text-3\" id=\"text-5-6\">
+<p>
+现在,我们来定义稳定性(I)和抽象性(A)之间的关系。
+</p>
+
+<div class=\"figure\">
+<p><img src=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011157902-205198607.jpg\" alt=\"https://img2018.cnblogs.com/blog/1436518/201909/1436518-20190904011208299-1170595272.jpg\" width=\"300\" title=\"稳定-抽象坐标-被排除区域\" />
+</p>
+<p><span class=\"figure-number\">Figure 24: </span>稳定-抽象坐标-被排除区域</p>
+</div>
+
+<p>
+我们可以创建一个以A为纵轴，I为横轴的坐标图。如果在坐标图中绘制出两种“好”的包类型，会发现那些最稳定、最抽象的包位于左上角(0，1)处。
+那些最不稳定、最具体的包位于右下角(1,0)处。
+并非所有的包都会落在这两个位置，包的抽象性和稳定性是有程度的。例如，一个抽象类派生自另一个抽象类的情况是很常见的。
+派生类是具有依赖性的抽象体。因此，虽然它是最大限度抽的，但是它却不是最大程度稳定的，它的依赖性会降低它的稳定性。
+因为不能强制所有的包都位于(0,1)或者(1,0)，所以必须要假定在A/I图上有一个定义包的合理位置的点的轨迹。
+我们可以通过找出包不应该在的位置(也就是，被排除的区域)来推断该轨迹的含意。
+</p>
+
+<dl class=\"org-dl\">
+<dt>痛苦地带(Zone of Pain)</dt><dd>考虑一个在(0,0)附近的包，这是一个高度稳定且具体的包，我们不想要这种包，因为它是僵化的：无法对它进行扩展，因为它不是抽象的；
+并且由于它的稳定性，也很难对它进行更改。因此，通常，我们不期望看到设计良好的包位于(0,0)附近。
+(0,0)周围的区域被排除在外，我们称之为痛苦地带。</dd>
+<dt>无用地带(Zone of Uselessness)</dt><dd>考虑一个在(1,1)附近的包，这不是一个好位置，因为该位置处的包具有最大的抽象性却没有依赖者。
+这种包是无用的，因此，称这个区域为无用地带</dd>
+<dt>主序列(Main Sequence)</dt><dd>显然，我们想让可变的包都尽可能地远离这两个被排除的区域。
+那些距离这两个区域最远的轨迹点组成了连接和(1,0)和(0,1)的线。该线称为主序列。</dd>
+</dl>
+</div>
+<div id=\"outline-container-org3691d2e\" class=\"outline-4\">
+<h4 id=\"org3691d2e\"><span class=\"section-number-4\">5.6.1</span> 到主序列的距离</h4>
+<div class=\"outline-text-4\" id=\"text-5-6-1\">
+<dl class=\"org-dl\">
+<dt>距离D</dt><dd>\\(D = |A + I - 1| / \\sqrt{2}\\)</dd>
+<dt>规范化距离D`</dt><dd>\\(D` = | A + I - 1|\\)</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id=\"postamble\" class=\"status\">
+<p class=\"date\">Date: 2019-09-03 Tus</p>
+<p class=\"author\">Author: C.Wong</p>
+<p class=\"date\">Created: 2019-09-04 三 01:03</p>
+<p class=\"validation\"><a href=\"http://validator.w3.org/check?uri=referer\">Validate</a></p>
+</div>
+</body>
+</html>") ("title" . "《敏捷软件开发──原则、模式与实践》阅读笔记") ("enclosure" ("length" . 0)) ("link" . "http://www.cnblogs.com/channingwong/p/11456665.html") ("permalink" . "http://www.cnblogs.com/channingwong/p/11456665.html") ("postid" . 11456665) ("source") ("mt_keywords" . "设计模式,敏捷开发"))

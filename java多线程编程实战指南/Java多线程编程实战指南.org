@@ -1,8 +1,8 @@
 #+TITLE: 《Java多线程编程实战指南（核心篇）》阅读笔记
+#+CATEGORIES: Java
 #+AUTHOR: C.Wong
 #+EMAIL: channingwong@qq.com
 #+DATE: 2019-09-03 Tus
-#+DESCRIPTION:
 #+KEYWORDS: 多线程编程,java
 #+LANGUAGE:  cn-zh
 #+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t

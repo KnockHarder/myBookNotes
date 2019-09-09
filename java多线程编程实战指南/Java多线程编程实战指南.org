@@ -386,40 +386,40 @@ public class Main {
 
 #+BEGIN_SRC java
 public class Main {
-    private static final Semaphore SEMAPHORE = new Semaphore(Runtime.getRuntime().availableProcessors());
     private int shardValue = 1;
     private Helper helper;
 
-    void createHelper() {
+    private void createHelper() {
         this.helper = new Helper(shardValue);
     }
 
     public static void main(String[] args) throws InterruptedException {
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        final ExecutorService executorService = Executors.newCachedThreadPool();
+        final Semaphore semaphore = new Semaphore(Runtime.getRuntime().availableProcessors());
         Map<Integer, AtomicInteger> sumToTimes = new ConcurrentHashMap<>(16);
         Main main = new Main();
         final int size = 200000;
         for (int i = 0; i < size; i++) {
             executorService.submit(() -> {
                 try {
-                    SEMAPHORE.acquire();
+                    semaphore.acquire();
                     main.createHelper();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    SEMAPHORE.release();
+                    semaphore.release();
                 }
             });
             executorService.submit(() -> {
                 try {
                     try {
-                        SEMAPHORE.acquire();
+                        semaphore.acquire();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     main.sum(sumToTimes);
                 } finally {
-                    SEMAPHORE.release();
+                    semaphore.release();
                 }
             });
         }

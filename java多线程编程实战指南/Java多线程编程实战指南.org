@@ -350,6 +350,132 @@ public class Main {
    多线程的并发执行实际上是通过时间片分配实现的。此时，虽然多个线程是运行在同一个处理器上的，
    但是由于在发生上下文切換的时候，一个线程对寄存器变量的修改会被作为该线程的线程上下文保存起来，
    这导致另外一个线程无法“看到”该线程对这个变量的修政，因此，单处理器系统中实现的多线程编程也可能出现可见性问题。
+*** 有序性(Ordering)
+**** 重排序
+- 重排序(Reordering) :: 在多核处理器的环境下，代码的执行顺序可能是没有保障的：编译器可能改变两个操作的先后顺序；
+     工处理器可能不是完全依照程序的目标代码所指定的顺序执行指令；另外，在一个处理器上执行的多个操作，
+     从其他处理器的角度来看其顺序可能与目标代码所指定的顺序不一致。这种现象就叫作重排序。
+
+重排序是对内存访问有关的操作（读和写）所做的一种优化，它可以在不影响单线程程序正确性的情况下提升程序的性能。
+但是，它可能对多线程程序的正确性产生影响，即它可能导致线程安全问题。
+
+与可见性问题类似，重排序也不是必然出现的。重排序的潜在来源有许多，包括编译器(在Java中指的是JIT编译器)、
+处理器和存储子系统（包括写缓冲器、高速缓存）。
+
+为了理解重排序，我们先定义几个顺序：
+- 源代码顺序 :: 源代码中所指定的内存访问操作顺序。
+- 程序顺序 :: 在给定处理器上运行的目标代码所指定的内存访问操作顺序。尽管Java虚拟机执行代码有两种方式：
+	  解释执行（被执行的是字节码）和编译执行（被执行的是机器码），里的目标代码是指字节码。
+- 执行顺序 :: 内存访问操作在给定处理器上的实际执行顺序。
+- 感知顺序 :: 给定处理器所感知到（看到）的该处理器及其他处理器的内存访问操作发生的顺序。
+
+在此基础上，我们可以将重排序可以分为两类：指令重排序和存储子系统重排序。
++------------+--------------------------------------+--------------------+
+| 重排序类型 |              重排序表现              |     重排序来源     |
++------------+--------------------------------------+--------------------+
+|指令重排序  |程序顺序与源代码顺序不一致            |JIT编译器           |
+|            +--------------------------------------+--------------------+
+|            |执行顺序与程序顺序不一致              |JIT编译器、处理器   |
++------------+--------------------------------------+--------------------+
+|存储子系统重|源代码顺序、程序顺序和执行顺序这三者保|高速缓存、写缓冲器  |
+|排序        |持一致,但是感知顺序与执行顺序不一致   |                    |
++------------+--------------------------------------+--------------------+
+*** 指令重排序(Instruction Reorder)
+- 定义 :: 在源代码顺序与程序顺序不一致，或者程序顺序与执行顺序不一致的情况下，我们就说发生了指令重排序。
+	指令重排序是一种动作，它确确实实地对指令的顺序做了调整，其重排序的对象是指令。
+
+#+BEGIN_SRC java
+public class Main {
+    private static final Semaphore SEMAPHORE = new Semaphore(Runtime.getRuntime().availableProcessors());
+    private int shardValue = 1;
+    private Helper helper;
+
+    void createHelper() {
+        this.helper = new Helper(shardValue);
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        Map<Integer, AtomicInteger> sumToTimes = new ConcurrentHashMap<>(16);
+        Main main = new Main();
+        final int size = 200000;
+        for (int i = 0; i < size; i++) {
+            executorService.submit(() -> {
+                try {
+                    SEMAPHORE.acquire();
+                    main.createHelper();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    SEMAPHORE.release();
+                }
+            });
+            executorService.submit(() -> {
+                try {
+                    try {
+                        SEMAPHORE.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    main.sum(sumToTimes);
+                } finally {
+                    SEMAPHORE.release();
+                }
+            });
+        }
+        executorService.shutdown();
+        executorService.awaitTermination(2000, TimeUnit.MINUTES);
+        sumToTimes.forEach((sum, times) -> System.out.printf("%d : %d times %n", sum, times.intValue()));
+    }
+
+    private void sum(Map<Integer, AtomicInteger> sumToTimes) {
+        int sum;
+        final Helper observed = this.helper;
+        if (observed == null) {
+            sum = -1;
+        } else {
+            sum = observed.a + observed.b + observed.c + observed.d;
+        }
+        AtomicInteger atomicInteger = sumToTimes.putIfAbsent(sum, new AtomicInteger(1));
+        if (atomicInteger != null) {
+            sumToTimes.get(sum).incrementAndGet();
+        }
+    }
+
+    static class Helper {
+        int a;
+        int b;
+        int c;
+        int d;
+
+        Helper(int value) {
+            a = b = c = d = value;
+        }
+    }
+}
+#+END_SRC
+
+在上述例子中，我们创建了一个Main对象，并不停的给它的成员变量helper赋值，并计算helper的sum值。代码很简单，我们可以预测到输出结果都为4,
+只有在helper被赋值之前才可能出现-1,只有这两种输出。但如果我们多次运行程序，就会发现其输出结果包含了 -1~4 之间的所有值。
+
+#+BEGIN_SRC
+==== 运行结果一
+0 : 1 times 
+2 : 3 times 
+3 : 3 times 
+4 : 199993 times 
+
+==== 运行结果二
+1 : 1 times 
+3 : 2 times 
+4 : 199997 times 
+
+==== 运行结果三
+-1 : 2 times 
+3 : 1 times 
+4 : 199997 times 
+#+END_SRC
+
 ** 多线程编程的优势和风险
 *** 优势
 - 提高系统的吞吐率(Throughput) :: 多线程编程使得一个进程中可以有多个并发(Concurrent，即同时进行的)的操作。

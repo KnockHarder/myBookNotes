@@ -455,8 +455,10 @@ public class Main {
 }
 #+END_SRC
 
-在上述例子中，我们创建了一个Main对象，并不停的给它的成员变量helper赋值，并计算helper的sum值。代码很简单，我们可以预测到输出结果都为4,
-只有在helper被赋值之前才可能出现-1,只有这两种输出。但如果我们多次运行程序，就会发现其输出结果包含了 -1~4 之间的所有值。
+在上述例子中，我们创建了一个Main对象，并不停的给它的成员变量helper赋值，并计算helper的sum值。
+代码很简单，我们可以预测到输出结果大多都为4，只有在helper被赋值之前才可能出现-1，
+除这两种外不存在其他输出。但如果我们多次运行程序（需要添加JVM参数: -server -XX:-UseCompressedOops），
+就会发现实际的输出结果包含了 -1~4 之间的所有值。
 
 #+BEGIN_SRC
 ==== 运行结果一
@@ -474,6 +476,76 @@ public class Main {
 -1 : 2 times 
 3 : 1 times 
 4 : 199997 times 
+#+END_SRC
+
+如果我用使用常量 1 代替 =this.helper = new Helper(shardValue);= 中的 =shardValue= 变量，
+会发现运行结果只有0和-4两种。这是因为该语句可分为下列几个子操作（伪代码）：
+#+BEGIN_SRC
+//子操作① : 分配 Helper实例所需的内存空间，并获得一个指向该空间的引用
+objRef=allocate(Helper.class)
+//子操作② : 调用Helper类的构造器初始化，objRef引用指向的Helper实例
+inovkeConstructor(objref); 
+//子操作③ : 将Helper实例引用objRef赋值给实例变量helper
+helper=objRef
+#+END_SRC
+
+如果我们打印出JIT编译出的汇编代码（须添加hsdis-amd64库，并在JVM参数中加入
+-XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:+LogCompilation
+-XX:PrintAssemblyOptions=intel），会发现执行顺序与伪代码中的不一致，
+汇编指令将操作三重排序到操作一和操作二的中间：
+
+#+BEGIN_SRC
+x00007fe6a51e3788: mov    QWORD PTR [rax+0x18],0x0  ;*new
+                                              ; - com.thunisoft.zjzy.toolbox.Main::createHelper@1 (line 18)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@5 (line 31)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
+
+0x00007fe6a51e3790: mov    QWORD PTR [r10+0x18],rax  ;*putfield helper
+                                              ; - com.thunisoft.zjzy.toolbox.Main::createHelper@12 (line 18)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@5 (line 31)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
+
+0x00007fe6a51e3794: mov    r8d,DWORD PTR [r10+0x10]  ;*getfield shardValue
+                                              ; - com.thunisoft.zjzy.toolbox.Main::createHelper@6 (line 18)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@5 (line 31)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
+
+0x00007fe6a51e3798: mov    DWORD PTR [rax+0x10],r8d  ;*putfield a
+                                              ; - com.thunisoft.zjzy.toolbox.Main$Helper::<init>@21 (line 77)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::createHelper@9 (line 18)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@5 (line 31)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
+
+0x00007fe6a51e379c: mov    DWORD PTR [rax+0x1c],r8d  ;*putfield d
+                                              ; - com.thunisoft.zjzy.toolbox.Main$Helper::<init>@10 (line 77)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::createHelper@9 (line 18)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@5 (line 31)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
+
+0x00007fe6a51e37a0: mov    DWORD PTR [rax+0x18],r8d  ;*putfield c
+                                              ; - com.thunisoft.zjzy.toolbox.Main$Helper::<init>@14 (line 77)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::createHelper@9 (line 18)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@5 (line 31)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
+
+0x00007fe6a51e37a4: mov    DWORD PTR [rax+0x14],r8d  ;*putfield b
+                                              ; - com.thunisoft.zjzy.toolbox.Main$Helper::<init>@18 (line 77)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::createHelper@9 (line 18)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@5 (line 31)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
+
+0x00007fe6a51e37a8: mov    rdx,QWORD PTR [rcx+0x10]  ;*getfield sync
+                                              ; - java.util.concurrent.Semaphore::release@1 (line 426)
+                                              ; - com.thunisoft.zjzy.toolbox.Main::lambda$main$0@9 (line 35)
+                                              ; - com.thunisoft.zjzy.toolbox.Main$$Lambda$1/1456208737::run@8
+                                              ; - java.util.concurrent.Executors$RunnableAdapter::call@-1 (line 511)
 #+END_SRC
 
 ** 多线程编程的优势和风险

@@ -14,6 +14,10 @@
 - [敏捷软件开发](./AgileDevelopment/AgileDevelopment.org)
   : https://book.douban.com/subject/1140457/
 
+### 中间件
+
+-[Redis设计与实现](./redis设计与实现/about.md): https://book.douban.com/subject/25900156/
+
 ###  数据库 ###
 
 - SQL反模式 :: https://book.douban.com/subject/6800774/

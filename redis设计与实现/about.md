@@ -107,21 +107,26 @@
       默认使用LRU策略，可通过配置选择使用LFU策略
     - type及对应的编码方式如下:
       - OBJ_STRING: 字符串类型，内容使用sds结构
-        - raw编码方式: 为字符串创建sds对象，并将prt指向sds（实际是指向内容区，见上文中对sds的说明）
+        - OBJ_ENCODING_RAW编码方式: 为字符串创建sds对象，并将prt指向sds（实际是指向内容区，见上文中对sds的说明）
         - OBJ_ENCODING_EMBSTR编码方式: 此时将申请一段连续空间，将sds直接追加到robj后面的地址空间中。
           当字符串长度小于或等于44时，会使用这种编码方式，可减少一次内存分配操作。用来存放短的只读字符串，修改后会转成raw编码。
         - OBJ_ENCODING_INT编码方式: 当存储数据为int_64时，可以使用该编码方式，此时ptr存储内容为64位有符号整数值（注意直接存储值而不是指针）
       - OBJ_LIST：列表类型，可以正向、反向遍历
         - OBJ_ENCODING_QUICKLIST编码方式: quicklist
         - OBJ_ENCODING_ZIPLIST编码方式: ziplist
+        - 实际上已不再使用ziplist，只使用quicklist这一种编码形式
       - OBJ_SET：集合对象
         - OBJ_ENCODING_HT编码方式：使用sds作为key的dict
-        - OBJ_ENCODING_INTSET编码方式: intset
+        - OBJ_ENCODING_INTSET编码方式: intset，当所有元素都是可以用`long long`表示时，使用该类型
+        - 只允许由OBJ_ENCODING_INTSET向OBJ_ENCODING_HT升级
       - OBJ_ZSET: 有序集合对象
         - OBJ_ENCODING_SKIPLIST编码方式: zset，可以通过map快速获取节点
         - OBJ_ENCODING_ZIPLIST: ziplist，一个元素需要在ziplist中插入两个片段，分别存储ele和score
+        - 当条目数量小，且最大条目长度不超过阈值时，使用ziplist，否则升级为skiplist。在部分操作中也允许降级。
       - OBJ_HASH: 哈希对象
         - OBJ_ENCODING_ZIPLIST: ziplist
+        - OBJ_ENCODING_HT: dict实现，使用sds作为哈希的key和value
+        - 当哈希表中内容较少时，使用该ziplist，否则升级为dict。不允许降级操作。
       - OBJ_STREAM: 流对象
         - OBJ_ENCODING_STREAM: stream对象，多用于消息机制实现
       - OBJ_MODEL:

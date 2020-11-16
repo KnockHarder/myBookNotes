@@ -199,6 +199,10 @@ redisDb中包含以下几个部分:
   - 由于AOF文件会持续增长，且会记录`DEL`等操作，因此当AOF文件过大，且增强到一定比例后，会进行重写
   - 重写时会根据数据库中的实际情况，以`SET/RPUSH`等命令，记录下各缓存对象。由于单个命令的大小限制，因此在记录集合类型时，
     会控制单个语句的大小(AOF_REWRITE_ITEMS_PER_CMD=64)
+  - 重写会创建一个子进程单独执行相关操作，在重写期间新生成的AOF内容会除了定入AOF缓冲区外，还会放入AOF重写缓冲区(aof.c/feedAppendOnlyFile)，
+    重写子进程在完成db数据的重写后，会将重写缓存区中的内容写入AOF文件(aof.c/rewriteAppendOnlyFile)。
+    在重写进程结束后，发送完成信息(aof.c/rewriteAppendOnlyFileBackground)，主线程之后会再一次将AOF重写缓冲区中的内容定稿AOF文件()，
+    完成重写任务(aof.c/backgroundRewriteDoneHandler)。
   - 如果指定了使用RDB的格式进行重写时，那么将以RDB文件的格式进行输出
 
 现在考虑一种场景：redis运行了一段时间，我们发现没有打开AOF功能，现在应该怎么做？
@@ -210,7 +214,26 @@ redisDb中包含以下几个部分:
 因此，正确的做法是通过`CONFIG SET`命令，先将`appendonly`配置切换为`yes`，会立即生成aof文件。
 然后修改配置文件中的`appendonly`即可，以保证重启后AOF功能在重启后仍是开启状态，并使用aof文件进行数据恢复。
 
-## 事件通知（默认关闭）
+## 事件机制
+
+Redis的是一个事件驱动程序，事件分为两种类型:
+- 文件事件: 服务器与客户端通过socket连接，文件事件是对socket的抽象，进行读写操作。
+- 时间事件: 对定时操作的抽象。
+
+### 文件事件
+
+- 文件事件使用多路复用实现——服务器同时接收多个客户端连接，在处理时只有一个单进程处理。Redis的多路复用底层实现有多个，但对外提供统一接口，
+  在编译时会选择其中一个。
+- 文件事件类型分为可读(READABLE)、可写(WRITABLE)两种类型，当一个事件同时可读写时，默认先处理读事件后处理写事件，
+  如果指定事件类型为AE_BARRIER，则先处理写事件后处理读事件。
+- Redis在启动时，会监听配置的接口，并创建相应的文件处理器，用于处理通过tcp/tls/unixSocketFile发送的命令
+  - 创建client(networking.c/createClient)时，通过connSetReadHandler配置处理逻辑(networking.c/readQueryFromClient)，
+    并将事件监听加入eventLoop中(connection.c/CT_Socket,connSocketSetReadHandler)
+  - readQueryFromClient在执行命令时，会生成返回信息，添加返回信息加时会将客户端记录到server.clients_pending_wirte中
+    (networking.c/prepareClientToWrite)，在before_sleep中被输出到发出请求的客户端。
+
+
+### key事件通知（默认关闭）
 
 - 可以通过事件消息的方式，通知键值上的操作，该功能可以通过配置`notify-keyspace-events`打开
 - 可以通过`SUBSCRIBE`命令监听相应的事件

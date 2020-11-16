@@ -1,6 +1,6 @@
 # Redis设计与实现
 
-> 基于redis仓库提交: 84b3c18f7
+> 基于redis仓库提交: [84b3c18f7](https://github.com/KnockHarder/learning-redis)
 
 ## 基本数据结构
 

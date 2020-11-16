@@ -232,13 +232,49 @@ Redis的是一个事件驱动程序，事件分为两种类型:
   - readQueryFromClient在执行命令时，会生成返回信息，添加返回信息加时会将客户端记录到server.clients_pending_wirte中
     (networking.c/prepareClientToWrite)，在before_sleep中被输出到发出请求的客户端。
 
+### 时间事件
 
-### key事件通知（默认关闭）
+- 时间事件分为一次性事件与循环事件，区别在于事件函数的返回值，如果返回`-1`则该事件执行一次后被置为删除状态（下一次主循环时删除），如果为正数x，则表示每隔x秒执行一次。
+- 事件机制的处理逻辑在aeMain主循环中进行，文件事件优先于时间事件处理（获取文件事件的最大阻塞时间不超过距离最近一个时间事件的时间），因此时间事件的执行时间往往要稍晚于设定时间。
+
+Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用时间，避免出现抢占，因此每个事件的处理需要控制任务量（NET_MAX_WRITES_PER_EVENT）或直接创建子进程进行处理。
+
+#### key事件通知（默认关闭）
 
 - 可以通过事件消息的方式，通知键值上的操作，该功能可以通过配置`notify-keyspace-events`打开
 - 可以通过`SUBSCRIBE`命令监听相应的事件
 - 需要注意的是，这里实际上是通过`观察者模式实现`，因此需要先有观察者注册后(pubsub.c/pubsubSubscribeChannel,pubsub.c/pubsubPublishMessage)，
   才会产生发消息的动作。不要误将其当成`生产者-消费者`模式理解。
+- 发送的消息在client的回复缓冲区，因此实际发送动作也在主循环的`beforeSleep`中
+
+## 客户端(client)
+
+- client结构的定义在server.h文件中，下面列举了几个常用的字段
+  - id: 身份标识，server维护了一个原子类型的64位整数，每新建一个客户端便进行自增做为新客户端的id。
+  - conn: 客户端连接信息
+    - 如果是有连接客户端，则记录了连接信息(如tcp/tls文件描述符等)
+    - 如果是无连接客户端，则为NULL（也称为fakeClient）。例如在loadDataFromDisk时，如果使用aof文件恢复，则会生成一个无连接客户端执行aof文件中读取出的命令；redisServer持有的lua_client；
+      自定义模板中用于执行命令的客户端。
+  - db: 当前使用的数据库
+  - name: 连接名称，默认为NULL，可通过`CLIENT SETNAME`命令为客户端设置名称以方便区分
+  - querybuf、qb_pos、querybuf_peak: 读缓冲区，用于存放从conn中读取到的数据
+  - argc、argv、argv_len_sum: 客户端请求命令参数
+  - cmd、lastcmd: 从读缓冲区获取到的命令
+  - flags: 记录客户端的角色(slave/master)以及当前的状态
+  - buf、bufpos、reply: 输出缓冲区。当buf空间不够用时，会使用`list*`结构的reply存储输出信息，**buf不再使用**。
+  - authenticated: 客户端是否通过身份验证
+  - ctime、lastinteraction: 客户端创建时间、最后一次与服务器交互的时间
+  - obuf_soft_limit_reached_time: 输出内容第一次达到软限制的时间
+    - 这里的大小指: 已发送内容大小 + 缓冲区内容大小(当一次循环无法及时将内容发送完时会记录已发送数据大小)
+    - 软/硬限制、超出软大小限制时长限制可通过`client-output-buffer-limit`配置
+    - 如果大小超过硬性限制，客户端将被关闭；如果超过软性控制，且持续时间(如果中间某段时间回落则重新计算)超过时间限制，客户端将被关闭。
+- 普通客户端的创建: 当客户端程序连接到服务器时，服务器会创建一个client对象，记录客户端状态，并加入`server.clients`列表中；同时创建一个文件事件用于处理请求。
+- 普通客户端的关闭可以由于以下几个原因:
+  - 网络连接中断
+  - 请求格式错误、请求内容长度超限
+  - 被KILL
+  - 长时间空转
+  - 输出内容长度超限
 
 ## 多实例
 

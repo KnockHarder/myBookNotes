@@ -247,29 +247,68 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
   才会产生发消息的动作。不要误将其当成`生产者-消费者`模式理解。
 - 发送的消息在client的回复缓冲区，因此实际发送动作也在主循环的`beforeSleep`中
 
-## 客户端(client)与服务器(redisServer)
+## 服务器与客户端
 
+- redis例中有两个重要的数据结构: redisServer与client
+- redis服务的状态保存在redisServer中，因此全局只有一个名为server的实例对象
+- 这里列出了一部分redisServer结构体中字段
+  - db: redisDb数组，redis里有多个数据库，每个数据库即有一下redisDb实例
+  - dbnum: 整数，记录数据库数量
+  - aof_enable,aof_filename: 是否启用AOF功能，AOF文件名称
+  - aof_rewrite_scheduled: 当尝试进行aof重写操作，但已有后台任务在执行时，会将该字段置为真
+  - rdb_filename: RDB文件名称
+  - 缓存时间: 由于通过系统函数获取当前时间较慢，因此服务器会保存一个缓存时间，用于一些对时间精度要求不高的场合。缓存时间会在每个主循环中更新一次，
+    也会在其他特定场景更新，如通过client调用命令时更新一次、数据库从AOF/RDB中恢复时每隔一段时间更新一次(networking.c/processEventsWhileBlocked)。
+  - lru_clock: 当前服务器的lru时间。在serverCron执行过程中更新，获取服务器信息时也会更新。
+  - stat_net_input_bytes、stat_net_output_bytes、stat_numcommands等统计数据
+  - rdb_child_pid、aof_child_pid、module_child_pid: 子进程的pid，同一时间内只会有一个对应的子进程，用于执行一些耗时长的任务。
+  - child_info_pipe: int[2]类型，记录通过pipe命令产生的管道线，用于父子进程间通信。
+  - clients: 列表对象，用于保存和服务器建立的远程连接信息
+  - master: 当前节点为从节点时，会持有一个连接到主节点的连接——当前节点可以同时为主节点和从节点，主从节点是相对的，主节点是从节点的复制。
+  - repl_state: 主从连接状态
+  - slaves: 列表对象，登记与从节点建立的连接
+  - replid: 当前节点为从节点时，记录根主节点的id——一级节点下还可以有二级从节点，该id为根部节点的server.replid（根节点在初始化时生成）
+  - master_repl_offset: 当前节点为从节点时，记录已从主节点同步的数据量，用于增量同步
+  - repl_transfer_xxx: 进行全量的主从同步时会使用
+  - repl_backlog: 缓存的同步数据，用于增量同步。由于缓存时占用空间有限（可配置），当增量需求超过缓存空间长度后，会退化到全是同步，
+    因此需要根据机器配置和业务实际情况配置。
+  - master_initial_offset: 当前节点为从节点时，每次进行全量同步后，更新该值为主节点的server.master_repl_offset，
+    用于在全量同步后，初始化server.master
+  - clients_pending_write: 列表对象，当client的输出缓冲区有值，即网络连接没被占用时，会登录到该列表中。
+  - master_initial_offset:
+- client是用于存储连接信息的数据结构，当和服务器产生连接以进行命令交互时，都会创建一个client，无论是通过网络连接(如redis-cli
+  与服务器建立连接)还是通过文件（加载rdb文件时）或其他方式。不同的时，通过socket创建的client会记录到`server.clients`列表中，
+  同时为其时创建一个文件事件用于处理请求数据。
 - client结构的定义在server.h文件中，下面列举了几个常用的字段
   - id: 身份标识，server维护了一个原子类型的64位整数，每新建一个客户端便进行自增做为新客户端的id。
-  - conn: 客户端连接信息
+  - conn: 连接信息
     - 如果是有连接客户端，则记录了连接信息(如tcp/tls文件描述符等)
-    - 如果是无连接客户端，则为NULL（也称为fakeClient）。例如在loadDataFromDisk时，如果使用aof文件恢复，则会生成一个无连接客户端执行aof文件中读取出的命令；redisServer持有的lua_client；
-      自定义模板中用于执行命令的客户端。
-  - db: 当前使用的数据库
+    - 如果是无连接客户端，则为NULL（也称为fakeClient）。例如在loadDataFromDisk时，使用aof文件恢复数据库时，
+      则会生成一个无连接客户端执行aof文件中读取出的命令；redisServer持有的lua_client；自定义模板中用于执行命令的客户端。
+  - db: 当前使用的数据库，通过该client传输的查询/赋值等命令都会在该数据库中执行
   - name: 连接名称，默认为NULL，可通过`CLIENT SETNAME`命令为客户端设置名称以方便区分
-  - querybuf、qb_pos、querybuf_peak: 读缓冲区，用于存放从conn中读取到的数据
+  - querybuf、qb_pos、querybuf_peak: 读缓冲区，用于存放从conn中读取到的命令，这些命令可能来自于一个三方应用，也可能来源于主节点（主从同步）
   - argc、argv、argv_len_sum: 客户端请求命令参数
   - cmd、lastcmd: 从读缓冲区获取到的命令
   - flags: 记录客户端的角色(slave/master)以及当前的状态
-  - buf、bufpos、reply: 输出缓冲区。当buf空间不够用时，会使用`list*`结构的reply存储输出信息，**buf不再使用**。
+  - buf、bufpos、reply: 输出缓冲区，用于输出查询命令的返回信息；如果是主节点持有的来自于从节点的连接，
+    还会在与从节点完成连接和同步后，向从节点发送同步命令。
+    buf为`char*`结构，当buf空间不够用时，会使用`list*`结构的reply存储输出信息，存储**buf不再使用**。
   - authenticated: 客户端是否通过身份验证
   - ctime、lastinteraction: 客户端创建时间、最后一次与服务器交互的时间
   - obuf_soft_limit_reached_time: 输出内容第一次达到软限制的时间
     - 这里的大小指: 已发送内容大小 + 缓冲区内容大小(当一次循环无法及时将内容发送完时会记录已发送数据大小)
     - 软/硬限制、超出软大小限制时长限制可通过`client-output-buffer-limit`配置
     - 如果大小超过硬性限制，客户端将被关闭；如果超过软性控制，且持续时间(如果中间某段时间回落则重新计算)超过时间限制，客户端将被关闭。
-- 普通客户端的创建: 当客户端程序连接到服务器时，服务器会创建一个client对象，记录客户端状态，并加入`server.clients`列表中；同时创建一个文件事件用于处理请求
-- 在执行命令前会做一些检查，如果不满足要求，则拒绝执行。检查内容包括
+  - replstate: 进行主从同步时，用于标记当前同步状态
+    - 从节点服务器持有一个身份为master的client，状态是以`REPL_STATE`前缀的宏定义常量
+    - 主节点会持有多个身份为slave的client，状态是以`SLAVE_STATE`为前缀的宏定义常量
+  - reploff: 身份为master时有效，记录标记从主节点已同步的数据量，供后续进行增量同步时使用。
+  - psync_initial_offset: 当前身份为master时有效，当fullSync时，向从节点传递该值，用于标记与从节点进行同步数据的起始位置
+
+### 客户端连接与命令执行
+
+- 服务器通过client接收到命令后，在执行命令前会做一些检查，如果不满足要求，则拒绝执行。检查内容包括
   - 命令是否存在
   - 参数个数是否正确
   - 客户端是否通过权限校验
@@ -282,33 +321,24 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
   - 命令调用记录加一、记录调用耗时
   - 添加AOF记录
   - 如果当前服务器为主服务器，需要将命令执行后的状态同步到其他服务器
-- 执行命令产生的回复会追加到输出缓冲区中，在`beforeSleep`中对缓冲区中内容进行冲刷——如果内容过多，每次主循环只会冲刷一部分内容。
-  - redis的返回内容，如果以'-'开头，一般是异常信息。
+- 执行命令产生的回复会追加到输出缓冲区中，并将client登记至server.clients_pending_write列表中，
+  最终在`beforeSleep`过程将缓冲区中内容进行冲刷到连接方，每次主循环只会冲刷一部分内容。
+  - redis的返回内容，如果以'-'开头，是异常场景下的返回信息。
+  - 如果以'+'开头，是有效场景下的返回信息
 - 普通客户端的关闭可以由于以下几个原因:
   - 网络连接中断
   - 请求格式错误、请求内容长度超限
   - 被KILL
   - 长时间空转
   - 输出内容长度超限
-- redisServer中的一些字段
-  - 缓存时间: 由于通过系统函数获取当前时间较慢，因此服务器会保存一个缓存时间，用于一些对时间精度要求不高的场合。缓存时间会在每个主循环中更新一次，
-    也会在其他特定场景更新，如通过client调用命令时更新一次、数据库从AOF/RDB中恢复时每隔一段时间更新一次(networking.c/processEventsWhileBlocked)。
-  - lru_clock: 当前服务器的lru时间。在serverCron执行过程中更新，获取服务器信息时也会更新。
-  - stat_net_input_bytes、stat_net_output_bytes、stat_numcommands: 记录已处理的数据量，用于服务器数据统计
-  - stat_peak_memory: 记录内存占用的峰值，会在serverCron、命令执行、processEventsWhileBlocked等场合下更新
-  - aof_rewrite_scheduled: 当尝试进行aof重写操作，但已有后台任务在执行时，会将该字段置为真
-  - rdb_child_pid、aof_child_pid、module_child_pid: 子进程的pid
-  - cronloops: serverCron已经历的循环次数
 
-## 多实例
-
-### 主从服务器
+## 主从服务器
 
 在redis中，可以通过`SLAVEOF`将当前服务器设置为另一个服务器的拷贝，被拷贝服务器称为`主(master)服务器`，拷贝服务器称为`从(slave)服务器`。
 
-- 使用sync/psync进行主从同步时，从服务器的master.repl_state状态变更如下:
+- 使用sync/psync进行全量主从同步时，从服务器的master.repl_state状态变更如下:
 ![从服务器中master_client状态](./从服务器中master_client状态.png)
-- 使用sync/psync进行主从同步时，主服务器维护的slave的client.repl_state状态变更如下:
+- 使用sync/psync进行全量主从同步时，主服务器维护的slave的client.repl_state状态变更如下:
 ![主服务器中slave_client状态](./主服务器中slave_client状态.png)
 - diskless模式:
   - 主从同步过程中，服务端有两种模式传输数据
@@ -320,6 +350,13 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
     - diskless模式下，会清空数据库，并直接将socket配置为阻塞模式，边接收数据边更新数据库
   - 需要注意的是，主从数据库可以使用不同的模式。其中主数据库通过`repl-diskless-sync`配置发送模式，
     从数据库通过`repl-diskless-load`配置数据加载模式。
-- 除了sync/psync同步外，在主节点执行造成数据库变化的命令时，也会直接将命令同步到各从节点(server.c/propagate)
+- 除了全量同步外，还有增量的同步
+  - 被动的增量同步: 在主节点执行造成数据库变化的命令时，也会直接将命令同步到各从节点(server.c/propagate,
+    replication.c/replicationFeedSlaves)
+  - 主动的增量同步(psync):
+    - 在replicationFeedSlaves方法中可以看到，除了将命令发送给已建立连接的从节点外，还会将其输出到repl_backlog中
+    - 如果某个从节点掉线后重连，这时会发送`psync`命令，携带`replyid`（上一次连接的主服务器id）
+      和`reply_offset`（已同步数据总和）两个参数；主服务器在接收到`psync`后，判定该从节点只需要进行增量同步即可时，
+      会从repl_backlog中取出未同步的部分，返回给从服务器。
 - 主从同步期间，propagate时只会将内容输出到缓冲区，等待client变为online状态后，才会真正发送数据
 - 从节点不会直接删除过期键，而是等到主节点的`DEL`消息时才会删除键。在此之前，如果客户端获取命令为非只读，非会返回过期数据。

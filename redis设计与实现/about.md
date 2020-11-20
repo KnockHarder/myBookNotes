@@ -1,8 +1,33 @@
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Redis设计与实现](#redis设计与实现)
+	- [一、数据结构](#一数据结构)
+		- [基本数据结构](#基本数据结构)
+		- [其他数据类型](#其他数据类型)
+	- [二、redis数据库](#二redis数据库)
+		- [数据库结构](#数据库结构)
+		- [缓存过期删除](#缓存过期删除)
+		- [缓存持久化](#缓存持久化)
+	- [三、服务器与客户端](#三服务器与客户端)
+		- [客户端连接与命令执行](#客户端连接与命令执行)
+	- [三、事件机制](#三事件机制)
+		- [文件事件](#文件事件)
+		- [时间事件](#时间事件)
+		- [事件遍历](#事件遍历)
+		- [key事件通知（默认关闭）](#key事件通知默认关闭)
+	- [四、主从服务器](#四主从服务器)
+		- [主从同步](#主从同步)
+		- [通过ACK对主从连接进行健康检测](#通过ack对主从连接进行健康检测)
+
+<!-- /TOC -->
+
 # Redis设计与实现
 
 > 基于redis仓库提交: [84b3c18f7](https://github.com/KnockHarder/learning-redis)
 
-## 基本数据结构
+## 一、数据结构
+
+### 基本数据结构
 
 1. 动态字符串
     - 相关文件: sds.h sds.c
@@ -55,7 +80,7 @@
       因此插入与删除动作的时间复杂度为O(n)
     - 因为zipentry同时记录了自身长度及前一节点长度，因此ziplist支持向前向后遍历两种方式
 
-## 其他数据类型
+### 其他数据类型
 
 1. 快速列表-qucklist
     - 相关文件: quicklist.h quicklist.c
@@ -134,7 +159,9 @@
     - redis可以根据实际灵活切换编码方式，以优化内存占用和访问速度
     - redis内存储了一些共享对象，如于10000的无符号整数等，用于减少不必要的对象创建
 
-## redis数据库
+## 二、redis数据库
+
+### 数据库结构
 
 redisServer有多个数据库，在服务启动时，会初始化相应的redisDb对象作为数据库对象。我们可以通过redis-cli中的select命令切换数据库。
 
@@ -149,7 +176,7 @@ redisDb中包含以下几个部分:
 8. expires_cursor: 64位无符号整数。配合定期缓存过期任务使用，记录已描述的slot数量。该值只增不减，且dict有两个动态扩容的th，因此实际运行时，需要实时计算访问下标。
 9. defrag_later: `list*`类型，元素为`sds`类型。
 
-## 缓存过期删除
+### 缓存过期删除
 
 - 缓存过期删除通过两种策略配合完成:
   - 惰性删除(db.c/expireIfNeeded): 让需要访问键对象时，判断对象是否过期，如果过期则回收。该策略使垃圾回收只回收需要过期处理的对象，性能较高，但因无法及时清理空间，
@@ -161,7 +188,7 @@ redisDb中包含以下几个部分:
 - 在删除对象时，如果开启惰性释放功能，则(lazyfree.c/dbAsyncDelete)会判断删除对象需要的空间释放次数，如果释放动作过多，则会将释放任务提交到队列中，
   供垃圾回收后台进行空间回收。
 
-## 缓存持久化
+### 缓存持久化
 
 - 持久化有两种形式: RDB与AOF
 - RDB持久化一般使用dump.rdb文件，文件名可以通过配置文件修改
@@ -214,44 +241,10 @@ redisDb中包含以下几个部分:
 因此，正确的做法是通过`CONFIG SET`命令，先将`appendonly`配置切换为`yes`，会立即生成aof文件。
 然后修改配置文件中的`appendonly`即可，以保证重启后AOF功能在重启后仍是开启状态，并使用aof文件进行数据恢复。
 
-## 事件机制
-
-Redis的是一个事件驱动程序，事件分为两种类型:
-- 文件事件: 服务器与客户端通过socket连接，文件事件是对socket的抽象，进行读写操作。
-- 时间事件: 对定时操作的抽象。
-
-### 文件事件
-
-- 文件事件使用多路复用实现——服务器同时接收多个客户端连接，在处理时只有一个单进程处理。Redis的多路复用底层实现有多个，但对外提供统一接口，
-  在编译时会选择其中一个。
-- 文件事件类型分为可读(READABLE)、可写(WRITABLE)两种类型，当一个事件同时可读写时，默认先处理读事件后处理写事件，
-  如果指定事件类型为AE_BARRIER，则先处理写事件后处理读事件。
-  - Redis在启动时，会监听配置的接口，并创建相应的文件处理器，作为套拼字(tcp/tls/unixSocketFile)的事件处理器，用来接收并执行命令
-  - 创建client(networking.c/createClient)时，通过connSetReadHandler配置处理逻辑(networking.c/readQueryFromClient)，
-    并将事件监听加入eventLoop中(connection.c/CT_Socket,connSocketSetReadHandler)
-  - readQueryFromClient在执行命令时，会生成返回信息，添加返回信息加时会将客户端记录到server.clients_pending_wirte中
-    (networking.c/prepareClientToWrite)，在before_sleep中被输出到发出请求的客户端。
-
-### 时间事件
-
-- 时间事件分为一次性事件与循环事件，区别在于事件函数的返回值，如果返回`-1`则该事件执行一次后被置为删除状态（下一次主循环时删除），如果为正数x，则表示每隔x秒执行一次。
-- 事件机制的处理逻辑在aeMain主循环中进行，文件事件优先于时间事件处理（获取文件事件的最大阻塞时间不超过距离最近一个时间事件的时间），因此时间事件的执行时间往往要稍晚于设定时间。
-
-Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用时间，避免出现抢占，因此每个事件的处理需要控制任务量（NET_MAX_WRITES_PER_EVENT）或直接创建子进程进行处理。
-
-#### key事件通知（默认关闭）
-
-- 可以通过事件消息的方式，通知键值上的操作，该功能可以通过配置`notify-keyspace-events`打开
-- 可以通过`SUBSCRIBE`命令监听相应的事件
-- 需要注意的是，这里实际上是通过`观察者模式实现`，因此需要先有观察者注册后(pubsub.c/pubsubSubscribeChannel,pubsub.c/pubsubPublishMessage)，
-  才会产生发消息的动作。不要误将其当成`生产者-消费者`模式理解。
-- 发送的消息在client的回复缓冲区，因此实际发送动作也在主循环的`beforeSleep`中
-
-## 服务器与客户端
+## 三、服务器与客户端
 
 - redis例中有两个重要的数据结构: redisServer与client
-- redis服务的状态保存在redisServer中，因此全局只有一个名为server的实例对象
-- 这里列出了一部分redisServer结构体中字段
+- redis服务的状态保存在redisServer中，因此全局只有一个名为server的实例对象，其中一部分字段的含义如下:
   - db: redisDb数组，redis里有多个数据库，每个数据库即有一下redisDb实例
   - dbnum: 整数，记录数据库数量
   - aof_enable,aof_filename: 是否启用AOF功能，AOF文件名称
@@ -264,19 +257,8 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
   - rdb_child_pid、aof_child_pid、module_child_pid: 子进程的pid，同一时间内只会有一个对应的子进程，用于执行一些耗时长的任务。
   - child_info_pipe: int[2]类型，记录通过pipe命令产生的管道线，用于父子进程间通信。
   - clients: 列表对象，用于保存和服务器建立的远程连接信息
-  - master: 当前节点为从节点时，会持有一个连接到主节点的连接——当前节点可以同时为主节点和从节点，主从节点是相对的，主节点是从节点的复制。
-  - repl_state: 当前节点为从节点时，主从连接状态，状态定义以`REPL_STATE`前缀的宏定义常量
-  - slaves: 列表对象，登记与从节点建立的连接
-  - replid: 当前节点为从节点时，记录根主节点的运行时id——一级节点下还可以有二级从节点，该id为根部节点的server.replid（根节点在初始化时随机生成）
-  - master_repl_offset: 当前节点为从节点时，记录已从主节点复制的数据偏移量，用于增量同步。当前节点为主节点时，记录已发送同步的数据偏移量。
-    当该节点既为主节点也为从节点时，实际上有两层含义。（这里的偏移量与实际数据量无关，偏移量随同步递增，仅用作确认从节点是否落后于主节点。）
-  - repl_transfer_xxx: 进行全量的主从同步时会使用
-  - repl_backlog: 缓存的同步数据，用于增量同步。由于缓存时占用空间有限（可配置），当增量同步时，需要同步的数据量超过缓存空间长度后，
-    会退化到全是同步，因此需要根据机器配置和业务实际情况配置。
-  - master_initial_offset: 当前节点为从节点时，每次进行全量同步后，更新该值为主节点的server.master_repl_offset，
-    用于在全量同步后，初始化server.master
-  - clients_pending_write: 列表对象，当client的输出缓冲区有值，即网络连接没被占用时，会登录到该列表中。
-  - master_initial_offset:
+  - client_obuf_limits: 各类型client的缓冲区大小限制(normal/slave/replica/pubsub/master)
+  - clients_pending_write: 列表对象，当client的输出缓冲区非空，且socket可用时，会登录到该列表中，并在主循环中(beforeSleep)将内容冲刷至socket
 - client是用于存储连接信息的数据结构，当和服务器产生连接以进行命令交互时，都会创建一个client，无论是通过网络连接(如redis-cli
   与服务器建立连接)还是通过文件（加载rdb文件时）或其他方式。不同的时，通过socket创建的client会记录到`server.clients`列表中，
   同时为其时创建一个文件事件用于处理请求数据。
@@ -288,23 +270,19 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
       则会生成一个无连接客户端执行aof文件中读取出的命令；redisServer持有的lua_client；自定义模板中用于执行命令的客户端。
   - db: 当前使用的数据库，通过该client传输的查询/赋值等命令都会在该数据库中执行
   - name: 连接名称，默认为NULL，可通过`CLIENT SETNAME`命令为客户端设置名称以方便区分
+  - authenticated: 是否通过认证
   - querybuf、qb_pos、querybuf_peak: 读缓冲区，用于存放从conn中读取到的命令，这些命令可能来自于一个三方应用，也可能来源于主节点（主从同步）
-  - argc、argv、argv_len_sum: 客户端请求命令参数
-  - cmd、lastcmd: 从读缓冲区获取到的命令
+  - argc、argv、argv_len_sum: 从querybuf中解析出的命令参数
+  - cmd: 从querybuf获取到的命令
   - flags: 记录客户端的角色(slave/master)以及当前的状态
-  - buf、bufpos、reply: 输出缓冲区，用于输出查询命令的返回信息；如果是主节点持有的来自于从节点的连接，
-    还会在与从节点完成连接和同步后，向从节点发送同步命令。
-    buf为`char*`结构，当buf空间不够用时，会使用`list*`结构的reply存储输出信息，存储**buf不再使用**。
-  - authenticated: 客户端是否通过身份验证
+  - buf、bufpos、reply、reply_bytes: 输出缓冲区，一般用于输出查询命令的返回信息，在进行主从增量同步时，也会被主节点用来向从节点同步相关写操作。
+    buf为定长的`char*`结构，pufpos记录可写位置；当buf空间不足以满足本次定稿时，会将使用buf中内容初始化一个节点加入到`list*`结构的reply中，
+    后续写入内容直接写到尾节点中，buf不再使用。当尾节点大小不能超过限制时，会将尾节点写满后将剩余内容创建一个新节点存储，并加入list中。
   - ctime、lastinteraction: 客户端创建时间、最后一次与服务器交互的时间
   - obuf_soft_limit_reached_time: 输出内容第一次达到软限制的时间
     - 这里的大小指: 已发送内容大小 + 缓冲区内容大小(当一次循环无法及时将内容发送完时会记录已发送数据大小)
     - 软/硬限制、超出软大小限制时长限制可通过`client-output-buffer-limit`配置
     - 如果大小超过硬性限制，客户端将被关闭；如果超过软性控制，且持续时间(如果中间某段时间回落则重新计算)超过时间限制，客户端将被关闭。
-  - replstate: 身份为slave时，用于标记当前同步状态，状态是以`SLAVE_STATE`为前缀的宏定义常量
-  - psync_initial_offset: 身份为slaver时有效，记录进行fullSync时的server.master_repl_offset。在等待bgsave期间，
-    如果有新的从节点想进行fullSync，直接将其加入到等待bgsave的列表，并将该值返回给从节点，重置从节点的master_initial_offset。
-  - reploff: 身份为master时有效，记录标记从主节点已同步的数据量，供后续进行增量同步时使用。
 
 ### 客户端连接与命令执行
 
@@ -323,16 +301,52 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
   - 如果当前服务器为主服务器，需要将命令执行后的状态同步到其他服务器
 - 执行命令产生的回复会追加到输出缓冲区中，并将client登记至server.clients_pending_write列表中，
   最终在`beforeSleep`过程将缓冲区中内容进行冲刷到连接方，每次主循环只会冲刷一部分内容。
-  - redis的返回内容，如果以'-'开头，是异常场景下的返回信息。
-  - 如果以'+'开头，是有效场景下的返回信息
+  - 执行命令时，如果出现异常情况，返回内容以'-'开头，正向的返回内容以'+'开头
 - 普通客户端的关闭可以由于以下几个原因:
   - 网络连接中断
   - 请求格式错误、请求内容长度超限
   - 被KILL
   - 长时间空转
-  - 输出内容长度超限
+  - 输出缓冲区中内容长度超过限制——包括超过硬性大小限制或超过软件大小限制一定时间
 
-## 主从服务器
+## 三、事件机制
+
+Redis的是一个事件驱动程序，事件分为两种类型:
+- 文件事件: 服务器与客户端通过socket连接，文件事件是对socket的抽象，进行读写操作。
+- 时间事件: 对定时操作的抽象。
+
+### 文件事件
+
+- 文件事件使用多路复用实现: 服务器同时接收多个客户端连接，但通过单进程单线程的方式处理，该线程会遍历就绪的文件事件逐个进行处理，达到多路复用的效果。
+  多路复用底层实现有多个，但对上层提供统一接口(函数定义)，redis在编译时会选择其中一个实现。
+- 文件事件类型分为可读(READABLE)、可写(WRITABLE)两种类型，当一个事件同时可读写时，默认先处理读事件后处理写事件，
+  如果指定事件类型为AE_BARRIER，则先处理写事件后处理读事件。
+- 下面是几个常见的文件事件
+  - Redis在启动时，会监听配置的接口，并创建相应的文件处理器，作为套拼字(tcp/tls/unixSocketFile)的事件处理器，用来接收并执行命令
+  - 创建client(networking.c/createClient)时，通过connSetReadHandler配置处理逻辑(networking.c/readQueryFromClient)，
+    并将事件监听加入eventLoop中(connection.c/CT_Socket,connSocketSetReadHandler)
+  - readQueryFromClient在执行命令时，会生成返回信息，添加返回信息加时会将客户端记录到server.clients_pending_wirte中
+    (networking.c/prepareClientToWrite)，在before_sleep中被输出到发出请求的客户端。
+
+### 时间事件
+
+- 时间事件分为一次性事件与循环事件，区别在于事件函数的返回值，如果返回`-1`则该事件执行一次后被置为删除状态（下一次主循环时删除），如果为正数x，则表示每隔x秒执行一次。
+- 事件机制的处理逻辑在aeMain主循环中进行，文件事件优先于时间事件处理（获取文件事件的最大阻塞时间不超过距离最近一个时间事件的时间），因此时间事件的执行时间往往要稍晚于设定时间。
+- redis启动时会初始化一个用于维护服务器状态的时间事件，对应的执行函数为serverCron，时间间隔为1秒
+
+### 事件遍历
+
+- Redis的事件遍历在主循环aeMain中
+- 各个事件应尽可能少的占用时间，避免出现对资源的长时间占用，因此每个事件的需要控制单次循环的任务量，对于处理事件较长的任务，可以创建子进程进行。
+
+### key事件通知（默认关闭）
+
+- 可以通过事件消息的方式，通知键值上的操作，该功能可以通过配置`notify-keyspace-events`打开，并通过`SUBSCRIBE`命令监听相应的事件
+- 需要注意的是，这里实际上是通过`观察者模式实现`，因此需要先有观察者注册后(pubsub.c/pubsubSubscribeChannel,pubsub.c/pubsubPublishMessage)，
+  才会产生发消息的动作。不要误将其当成`生产者-消费者`模式理解。
+
+
+## 四、主从服务器
 
 - 在redis中，可以通过`SLAVEOF`将当前服务器设置为另一个服务器的拷贝，被拷贝服务器称为`主(master)服务器`，拷贝服务器称为`从(slave)服务器`。
 - 从节点不会直接删除过期键，而是等到主节点的`DEL`消息时才会删除键。在此之前，如果客户端获取命令为非只读，非会返回过期数据。
@@ -343,6 +357,25 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
 ![从服务器中master_client状态](./从服务器中master_client状态.png)
 - 使用sync/psync进行全量主从同步时，主服务器维护的slave的client.repl_state状态变更如下:
 ![主服务器中slave_client状态](./主服务器中slave_client状态.png)
+- redisServer与client中服务于主从同步的字段
+  - redisServer:
+    - master: 当前节点为从节点时，会持有一个连接到主节点的连接——当前节点可以同时为主节点和从节点，主从节点是相对的，主节点是从节点的复制。
+    - repl_state: 当前节点为从节点时，主从连接状态，状态定义以`REPL_STATE`前缀的宏定义常量
+    - slaves: 列表对象，登记与从节点建立的连接
+    - replid: 当前节点为从节点时，记录根主节点的运行时id——一级节点下还可以有二级从节点，该id为根部节点的server.replid（根节点在初始化时随机生成）
+    - master_repl_offset: 当前节点为从节点时，记录已从主节点复制的数据偏移量，用于增量同步。当前节点为主节点时，记录已发送同步的数据偏移量。
+      当该节点既为主节点也为从节点时，实际上有两层含义。（这里的偏移量与实际数据量无关，偏移量随同步递增，仅用作确认从节点是否落后于主节点。）
+    - repl_transfer_xxx: 进行全量的主从同步时会使用
+    - repl_backlog: 缓存的同步数据，用于增量同步。由于缓存时占用空间有限（可配置），当增量同步时，需要同步的数据量超过缓存空间长度后，
+      会退化到全是同步，因此需要根据机器配置和业务实际情况配置。
+    - master_initial_offset: 当前节点为从节点时，每次进行全量同步后，更新该值为主节点的server.master_repl_offset，
+      用于在全量同步后，初始化server.master
+  - client:
+    - flags: 记录客户端的角色(slave/master)以及当前的状态
+    - replstate: 身份为slave时，用于标记当前同步状态，状态是以`SLAVE_STATE`为前缀的宏定义常量
+    - psync_initial_offset: 身份为slaver时有效，记录进行fullSync时的server.master_repl_offset。在等待bgsave期间，
+      如果有新的从节点想进行fullSync，直接将其加入到等待bgsave的列表，并将该值返回给从节点，重置从节点的master_initial_offset。
+    - reploff: 身份为master时有效，记录标记从主节点已同步的数据量，供后续进行增量同步时使用。
 - diskless模式:
   - 主从同步过程中，服务端有两种模式传输数据
     - 普通传输模式下，会先fork出子进程生成rdb文件，文件生成后，将文件大小和文件内容通过socket传输到从节点
@@ -363,7 +396,7 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
       会从repl_backlog中取出未同步的部分，返回给从服务器。
 - 主从同步期间，propagate时只会将内容输出到缓冲区，等待client变为online状态后，才会真正发送数据
 
-### 通过ACK维护服务质量
+### 通过ACK对主从连接进行健康检测
 
 - 为从节点服务器在运行serverCron时(replication.c/replicationCron)，会向主节点发送`REPLCONF ACK`命令。
   主节点接收到命令后，会相应client.repl_ack_time更新为当前缓存时间，并更新client.repl_ack_off为从节点中记录的reploff
@@ -371,4 +404,3 @@ Redis的事件遍历处理在主循环中，各个事件应尽可能少的占用
   - `repl-min-slaves-max-lag`配置了client(slave)两次ack之前的最小间隔，如果超过该时间，认定为连接异常(replication.c/replicationCron)
   - 当创建的连接数据少于`repl_min_slaves_to_write`时，将拒绝执行会导致数据库变化的命令(server.c/processCommand)，
     因为此时主节点已无法及时将变化同步至从数据库。
--

@@ -18,6 +18,7 @@
 	- [四、主从服务器](#四主从服务器)
 		- [主从同步](#主从同步)
 		- [通过ACK对主从连接进行健康检测](#通过ack对主从连接进行健康检测)
+	- [五、哨兵(sentinel)节点](#五哨兵sentinel节点)
 
 <!-- /TOC -->
 
@@ -404,3 +405,47 @@ Redis的是一个事件驱动程序，事件分为两种类型:
   - `repl-min-slaves-max-lag`配置了client(slave)两次ack之前的最小间隔，如果超过该时间，认定为连接异常(replication.c/replicationCron)
   - 当创建的连接数据少于`repl_min_slaves_to_write`时，将拒绝执行会导致数据库变化的命令(server.c/processCommand)，
     因为此时主节点已无法及时将变化同步至从数据库。
+
+## 五、哨兵(sentinel)节点
+
+主从复制提供了数据的分布式存储方案，但当主节点不可靠时，由于从节点不能进行写操作，导致所有的节点都无法正常使用。
+为此可以将某个节点标记为哨兵节点，哨兵节点可以监听多个主服务器，当某个被监视的主服务器进行下线状态时，哨兵节点将从其下属的从节点中选择一个，
+做为新的主节点。
+
+- 哨兵模式启动时，必须指定配置文件。由于哨兵模式不使用数据库，因此启动时不会加载rdb/aof文件
+- 哨兵模式下，会使用另一套完全不同的命令(server.c/initSentinel)，且会初始化一个名为`sentinel`的全局变量用作记录口哨兵节点的状态
+- sentinelState结构体各字段:
+	- myid: 哨兵节点的ID，启动时随机生成(sentinel.c/sentinelIsRunning)
+	- announce_ip、announce_port: 对外ip和端口
+	- current_epoch: ...
+	- masters: dict类型，被监听的主节点
+	- tilt: 是否打开了tilt模式，tilt会在主循环两次时间间隔过长或服务器启动时间过长时打开
+	- tilt_start_time: tilt模式打开时间
+	- previous_time: 上一次进行主循环的时间，服务启动时被初始化为启动时间
+	- running_scripts: 当前正在执行的脚本数量
+	- scripts_queue: 脚本队列
+	- simfailure_flags: 失败原因宏定义以`SENTINEL_SIMFAILURE`为前缀
+	- deny_scripts_reconfig: 是否禁止通过`SENTINEL SET`命令修改脚本路径
+	- sentinel_auth_user,sentinel_auth_pass:
+	- down_after_period: ....
+	- failover_timeout: ...
+- 配置文件中，可以通过`sentinel moniotr <name> <host> <port> <quorum>`配置监听的主节点基本信息，并通过`sentinel xxx`对`sentinelRedisInstance`中部分属性进行配置
+- 被监听的节点的信息用`sentinelRedisInstance`存储，部分信息如下:
+	- flags: 当前身份及状态
+	- name: 名称
+	- runid: id
+	- sentinelAddr: ip地址
+	- instanceLink: 连接信息
+	- quorum:
+	- role_reported: 当前身份
+	- role_reported_time: 身份确认时的时间
+	- sentinels: master身份有效，记录正在监听该主服务器的其他哨兵
+  - slaves: master身份有效，记录与该主节点连接的从节点
+	- auth_pass,auth_user: 认证信息
+	- slave_conf_change_time: slave身份有效，master地址变化的时间
+	- master_link_down_time: slave身份有效，记录与主节点断开连接的时间
+	- mstime_t slave_reconf_sent_time: slave身份有效，记录切换主节点的时间
+	- master: slave身份有效，指向主节点的`sentinelRedisInstance`
+	- slave_master_host,slave_master_port: slave身份有效，主节点的ip和port
+	- slave_master_link_status: slave身份有效，与主节点的连接状态
+- 哨兵模式下会在serverCron中调用`sentinelTimer`函数，完成哨兵节点的维护任务

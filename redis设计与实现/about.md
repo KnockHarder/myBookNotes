@@ -449,3 +449,7 @@ Redis的是一个事件驱动程序，事件分为两种类型:
 	- slave_master_host,slave_master_port: slave身份有效，主节点的ip和port
 	- slave_master_link_status: slave身份有效，与主节点的连接状态
 - 哨兵模式下会在serverCron中调用`sentinelTimer`函数，完成哨兵节点的维护任务
+	- 检查是否需要打开tilt状态(sentinel.c/sentinelCheckTiltCondition)
+	- 重新连接已断开的与master之间的连接(sentinel.c/sentinelHandleDictOfRedisInstances)
+	- 对主节点、主节点的slaves节点的连接进行健康检查
+	- 检测需要重新选举主节点

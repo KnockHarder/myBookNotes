@@ -415,10 +415,10 @@ Redis的是一个事件驱动程序，事件分为两种类型:
 - 哨兵模式启动时，必须指定配置文件，在redis运行过程中，运行时的配置（可能变化）会覆盖原配置文件的配置
 - 由于哨兵模式不使用数据库，因此启动时不会加载rdb/aof文件
 - 哨兵模式下，会使用另一套完全不同的命令(server.c/initSentinel)，且会初始化一个名为`sentinel`的全局变量用作记录口哨兵节点的状态
-- sentinelState结构体各字段:
+- sentinelState结构体部分字段:
 	- myid: 哨兵节点的ID，启动时随机生成(sentinel.c/sentinelIsRunning)
 	- announce_ip、announce_port: 对外ip和端口
-	- current_epoch: ...
+	- current_epoch: 当前纪元
 	- masters: dict类型，被监听的主节点
 	- tilt: 是否打开了tilt模式，tilt会在主循环两次时间间隔过长或服务器启动时间过长时打开
 	- tilt_start_time: tilt模式打开时间
@@ -427,9 +427,7 @@ Redis的是一个事件驱动程序，事件分为两种类型:
 	- scripts_queue: 脚本队列
 	- simfailure_flags: 失败原因宏定义以`SENTINEL_SIMFAILURE`为前缀
 	- deny_scripts_reconfig: 是否禁止通过`SENTINEL SET`命令修改脚本路径
-	- sentinel_auth_user,sentinel_auth_pass:
-	- down_after_period: ....
-	- failover_timeout: ...
+	- failover_timeout: failover动作的超时时间
 - 配置文件中，可以通过`sentinel moniotr <name> <host> <port> <quorum>`配置监听的主节点基本信息，并通过`sentinel xxx`对`sentinelRedisInstance`中部分属性进行配置
 - 被监听的节点的信息用`sentinelRedisInstance`存储，部分信息如下:
 	- flags: 当前身份及状态
@@ -437,12 +435,11 @@ Redis的是一个事件驱动程序，事件分为两种类型:
 	- runid: id
 	- sentinelAddr: ip地址
 	- instanceLink: 连接信息
-	- quorum:
+	- quorum: 被至少多少个哨兵判定为主观下线时，进入客观下线状态
 	- role_reported: 当前身份
 	- role_reported_time: 身份确认时的时间
 	- sentinels: master身份有效，记录正在监听该主服务器的其他哨兵
   - slaves: master身份有效，记录与该主节点连接的从节点
-	- auth_pass,auth_user: 认证信息
 	- slave_conf_change_time: slave身份有效，master地址变化的时间
 	- master_link_down_time: slave身份有效，记录与主节点断开连接的时间
 	- mstime_t slave_reconf_sent_time: slave身份有效，记录切换主节点的时间
@@ -493,3 +490,82 @@ Redis的是一个事件驱动程序，事件分为两种类型:
 	- 将挑选出的salve节点升级为master节点
 	- 将其他salve节点的master更换至新节点，并要求各哨兵更新至新结构
 	- 将原master节点加入新节点的salves中，新节点完全替换旧节点，结束迁移
+
+## 六、集群
+
+Redis集群是Redis提供的分布式数据库方案，集群通过分片(sharing)来进行数据共享，并提供复制和故障转移功能。
+
+- 可以配置`cluster-enabled`启用集群方案，服务器在启动时，会初始化server.cluster(server.c/clusterInit)。需要注意的是只有主节点允许建立集群
+- cluster配置文件可通过`cluster-config-file`指定，如果该配置文件不存在，会创建该文件
+- server.cluster的数据类型为`clusterState`，部分字段如下:
+	- myself: 当前节点的信息
+	- nodes: 集群中的所有节点
+	- currentEpoch: 当前纪元，用于故障迁移
+	- state: 集群状态(OK/FAIL)
+	- size: 集群中有效主节点数量
+	- nodes_black_list:
+	- migrating_slots_to,importing_slots_from,slots,slots_keys_count,slots_to_keys:
+	- failover_auth_time,failover_auth_sent,failover_auth_rank,failover_auth_epoch,cant_failover_reason:
+  - mf_end,mf_slave,mf_master_offset,mf_can_start: 主节点manualFailover时timout时间、触发mf的salve节点、
+  - lastVoteEpoch:
+  - todo_before_sleep: 在beforeSleep中需要完成的任务
+  - stats_bus_messages_sent,stats_bus_messages_received,failover_auth_count: 已发送、接收到的各类型消息的数量，收到failover_auth消息的数量
+  - stats_pfail_nodes: 状态为PFAIL的节点数量
+- 集群节点的信息在服务器中用struct clusterNode表示，其部分字段:
+	- ctime: 服务器中创建该节点对象的时间
+  - ip,port,cport: ip、端口、集群端口
+  - name: 节点名称。各节点在初始化时生成在一串随机字符，生成后便不会改变
+  - flags: 节点身份(master/slave)和状态
+  - configEpoch: 配置纪元，用于通知其他节点其配置已变化
+  - slots,numslots:
+  - slaves,numslaves: 从节点数组及数组大小
+  - slaveof: 身份为slaver时有效，记录从节点的名称
+  - ping_sent,pong_received: ping发送时间与pong响应时间。当收到 pong 响应时，会重置 ping 的时间为0
+  - data_received: 最后一次从该节点收到消息的时间
+  - fail_time: 进入failover状态的时间
+  - voted_time: 最后一次投票的时间
+  - repl_offset,repl_offset_time: 节点的repl_offset值，更新repl_offset的时间
+  - link: 集群使用的连接相关信息，使用`clusterLink`结构体
+  - fail_reports: 被其他节点判定为异常的记录，当超过一半的集群节点认定该节点异常时，将进入failover状态
+- 集群消息通过一个额外的端口进行监听，端口值为服务器端口加上10000。集群消息的统一使用clusterMsg结构，其组成成员如下:
+	- sig: 消息开头标记，固定为`Rcmb`
+  - totlen: 消息总长度，单位字节
+  - ver: 消息版本，必须使用同一个版本。宏定义版本号为`1`
+  - sender,myip,port,cport: 发送节点的名称、ip、端口、集群端口
+  - type: 消息类型
+  - currentEpoch: 发送方的epoch信息
+	- configEpoch: 发送方或其主节点的configEpoch
+  - offset: 发送方记录的主节点的repl_offset值
+  - myslots:
+  - slaveof: 当前节点为从节点时有效，记录主节点名称
+  - flags: 发送节点的flags
+  - state: 集群状态
+  - mflags: 手动failover状态标记
+  - data,count: 消息内容及消息数量，消息内容的实际类型根据`type`不同而变化
+- 同哨兵模式一样，集群的定时任务也在serverCron中，定时任务的函数名称为`clusterCron`，除此之外，在beforeSleep中也会根据`server.cluster->todo_before_sleep`
+	做一些工作。
+
+### 加入集群、集群节点间的握手(handshake)
+
+- 通过`cluster meet`命令将B节点加入当前节点A的集群中，此时将会创建B节点的node对象，并置为 handshake 和 meet 状态
+- 随后两个节点开始进行握手
+	- A节点在 clusterCron 中，尝试与B节点的集群端口(cport)建立连接，连接建立后开始握手，发送 meet 消息，meet消息中带有当前集群中部分节点的信息(Gossip)
+	- B接收到 meet 消息后，同样创建A节点的node对象，并置为 handshake 状态；根据 Gossip 部分更新集群信息；同时返回 pong 消息，pong消息中同样带有部分集群节点的信息
+	- A节点收到 pong 消息后，更新B节点的名称，并结束握手
+	- B节点在 clusterCron，尝试与A节点的集群端口(cport)建立连接，连接建立后开始握手，发送 ping 消息，ping消息中带有当前集群中部分节点的信息
+	- A节点在收到 ping 消息后，更新集群信息，并返回 pong 消息
+	- B节点在收到 pong 消息后，更新A节点的名称，并结束握手
+- 上述过程中，虽然B是被动加入A的集群，但加入后两个集群间会同步信息，实际上也就合并成了一个集群
+
+### 健康检测 + 信息同步
+
+- clusterCron会在每10个循环时，随机挑选5个集群中的已建立连接的节点，从中选择距最近一次接收 pong 消息最长时间节点，发送ping命令
+- clusterCron的每次循环中，会遍历各节点，如果节点连接超时则断开连接，否则在超时时间内发送 ping 消息。
+- 由于 ping 与 pong 消息带有各节点储存的集群信息，因此通过心跳维护，同时实现了集群信息的同步
+- 当前服务器A与某个节点B的连接请求/响应超时，B节点被标记为`PFAIL`状态
+
+### 槽指派
+
+- Redis集群通过分片的方式来保存数据库键值对，集群中共16384(CLUSTER_SLOTS)个分片，数据库的每个键都落座中其中一个槽，
+	集群中的每个节点可以处理 0~CLUSTER_SLOTS 个槽。
+- 当配置`server.cluster_require_full_coverage`配置打开时，若任一槽没有节点处理或节点下线时，整个集群位于下线状态。

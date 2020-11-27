@@ -504,7 +504,9 @@ Redis集群是Redis提供的分布式数据库方案，集群通过分片(sharin
 	- state: 集群状态(OK/FAIL)
 	- size: 集群中有效主节点数量
 	- nodes_black_list:
-	- migrating_slots_to,importing_slots_from,slots,slots_keys_count,slots_to_keys:
+	- migrating_slots_to: 正在将本节点的分片迁移至其他节点，存储迁移目标节点
+	- importing_slots_from: 正在将其他节点的分片迁G移至本节点，存储持有分片的节点
+	- slots,slots_keys_count,slots_to_keys: 集群中的分片所在节点、分片中拥有的key数量、分片里的所有key值
 	- failover_auth_time,failover_auth_sent,failover_auth_rank,failover_auth_epoch,cant_failover_reason:
   - mf_end,mf_slave,mf_master_offset,mf_can_start: 主节点manualFailover时timout时间、触发mf的salve节点、
   - lastVoteEpoch:
@@ -516,8 +518,8 @@ Redis集群是Redis提供的分布式数据库方案，集群通过分片(sharin
   - ip,port,cport: ip、端口、集群端口
   - name: 节点名称。各节点在初始化时生成在一串随机字符，生成后便不会改变
   - flags: 节点身份(master/slave)和状态
-  - configEpoch: 配置纪元，用于通知其他节点其配置已变化
-  - slots,numslots:
+  - configEpoch: 配置纪元，用于通过消息沟通各节点存储的集群信息
+  - slots,numslots: 当前节点负责的分片及数量
   - slaves,numslaves: 从节点数组及数组大小
   - slaveof: 身份为slaver时有效，记录从节点的名称
   - ping_sent,pong_received: ping发送时间与pong响应时间。当收到 pong 响应时，会重置 ping 的时间为0
@@ -534,9 +536,9 @@ Redis集群是Redis提供的分布式数据库方案，集群通过分片(sharin
   - sender,myip,port,cport: 发送节点的名称、ip、端口、集群端口
   - type: 消息类型
   - currentEpoch: 发送方的epoch信息
-	- configEpoch: 发送方或其主节点的configEpoch
+	- configEpoch: 发送方主节点的configEpoch，更新集群分片信息时如果冲突，会根据该值判断分片属于哪个节点
   - offset: 发送方记录的主节点的repl_offset值
-  - myslots:
+  - myslots: 当前节点负责的分片
   - slaveof: 当前节点为从节点时有效，记录主节点名称
   - flags: 发送节点的flags
   - state: 集群状态
@@ -563,9 +565,17 @@ Redis集群是Redis提供的分布式数据库方案，集群通过分片(sharin
 - clusterCron的每次循环中，会遍历各节点，如果节点连接超时则断开连接，否则在超时时间内发送 ping 消息。
 - 由于 ping 与 pong 消息带有各节点储存的集群信息，因此通过心跳维护，同时实现了集群信息的同步
 - 当前服务器A与某个节点B的连接请求/响应超时，B节点被标记为`PFAIL`状态
+- 当超过一半的主节点将某个节点标记为`PFAIL`状态后，该节点被标记为`FAIL`状态（类似于哨兵模式中的客观下线）
 
-### 槽指派
+### 分片
 
 - Redis集群通过分片的方式来保存数据库键值对，集群中共16384(CLUSTER_SLOTS)个分片，数据库的每个键都落座中其中一个槽，
 	集群中的每个节点可以处理 0~CLUSTER_SLOTS 个槽。
-- 当配置`server.cluster_require_full_coverage`配置打开时，若任一槽没有节点处理或节点下线时，整个集群位于下线状态。
+- 当配置`server.cluster_require_full_coverage`配置打开时，若任一槽没有节点处理或节点下线时，整个集群位于下线状态。该配置关闭时，当有一半的节点下线时，集群位于下线状态。
+- 当某节点发送集群消息时，会在消息中携带该节点的master节点的slot信息，这样各节点通过消息沟通，同步集群的分片情况，以便在执行命令时将其指派至正确的节点。
+- 集群模式下每个节点只有一个数据库`server.db[0]`，不允许切换数据库；且部分命令只能获取本节点的键值信息，如`KEYS`命令
+- 由于集群是用分片的方式进行存储，如果单个命令有多个keys值，且跨实例，那么命令将无法执行。比如分别通过执行`SET nameA valueA` `SET nameB valueB`，两个值被分配(hash)至了不同分片，
+	然后希望通过`MGET nameA nameB`的方式同时获取到两个值。
+	- 由于在hash时如果key值中有花括号`{}`，会使用第一对花括号中的内容而不是整个key值进行哈希，这样可以用来满足要求某些键值被放在一个master中的场景
+- 分片的迁移需要通过多个命令完成，包括`cluster setslot`为分片标记状态，`cluster getkeysinslot`获取分片中的key，以及`migrate`迁移键值对。实际官方提供了用**ruby**语言写的集群管理工具**cluster-trib**，
+	通过该工具的`reshard`命令可以一键迁移

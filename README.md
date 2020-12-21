@@ -27,6 +27,8 @@
 ###  数据库 ###
 
 - [SQL反模式](https://book.douban.com/subject/6800774/)
+- [高性能MySql](https://book.douban.com/subject/23008813/)
+  - [笔记](./高性能mysql/about.md)
 
 ### 其他 ###
 

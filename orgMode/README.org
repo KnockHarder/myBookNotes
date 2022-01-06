@@ -1,0 +1,66 @@
+* 基础结构
+
+#+NAME: basicExample.org
+#+BEGIN_SRC org
+  ,* 左侧顶头以一或多个星号开始，且不能用 'Footnotes' 关键字作为标题。多级标题可进行折叠
+
+  ,** second level heading
+
+  - unordered list item
+
+
+  1. ordered list item
+
+
+  1) ordered list item
+
+
+  20. [@20] force to start list with 20
+
+
+  - item :: description of item
+  :DRAWERNAME:
+  This is inside the drawer.  Sometimes you want to keep information with an entry,
+  But yhou normally do not want to see it.  Then drawers can be used and folded.
+  :END:
+#+END_SRC
+
+* 基本操作
+
+** 标题和权型结构操作结构
+
+- 移动到上/下一个（同级）标题
+- 用大纲视角快速移动: org-goto
+- 快速创建一个新标题: M-RET
+- 标题层级调整: M-LEFT,M-RIGHT,M-S-LEFT,M-S-RIGHT
+- 和相邻的同级别标题交换位置: org-move-subtree-up,org-move-subtree-down
+- 选中整个子树: org-mark-subtree
+- 剪切/复制/粘贴整个子树: org-cut-subtree, org-copy-subtree, org-paste-subtree
+- 移动整个子树或区域: org-refile
+- 排序: org-sort
+- narrow 操作: org-narrow-to-subtree,org-narrow-to-block
+- 正文与标题相互转换: org-toggle-heading
+- 稀疏树，可以通过指定正则的方式只展示部分子节点，并通过 next-error 命令移动: org-sparse-tree
+
+** 列表操作
+
+- 快速创建一个新的同级条目: 同标题
+- 快速创建一个 checkbox 条目: M-S-RET 。同创建同级 TODO 标题
+- 遍历列表: S-UP,S-DOWN
+- 和相邻的同级别条目交换位置: M-UP,M-DOWN
+- 层级调整: 同标题
+- 切换 checkbox 状态/列表对齐: C-c C-c
+- 切换整个列表前缀/将已有内容转换成列表格式: C-c -
+- 切换整个列表前缀: S-LEFT,S-RIGHT
+- 将列表条目转换成子级标题: C-c *
+- 将整个列表转换成子级标题: C-c C-*
+- 排序: C-c ^
+
+** drawers
+
+- 快速创建: org-insert-drawer
+- 创建带日间的 'LOGBOOK' drawer: C-c C-z
+
+** 日程管理
+
+- 克隆日程并使新日程按指定时间偏移: org-clone-subtree-with-time-shift

@@ -10,7 +10,10 @@
 - [有效的单元测试](https://book.douban.com/subject/26364867/)
 - [powermock](https://github.com/powermock/powermock/wiki)
 
-### 程序设计 ###
+### Java 及软件工程 ###
+
+- [深入理解Java虚拟机](https://book.douban.com/subject/34907497/)
+  - [笔记](./深入理解Java虚拟机/README.org)
 
 - [Java多线程编程实战指南（核心篇）](https://book.douban.com/subject/27034721/)
   - [整理笔记（未完成）](./java多线程编程实战指南/Java多线程编程实战指南.org)
